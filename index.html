@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+  <title>Manual Maestro: Crea tu Academia Online Gratis con Coderick e IA (V002)</title>
+  <style>
+    :root {
+      --bg-main: #0a0e1a;
+      --bg-card: #0f172a;
+      --bg-elevated: #1e293b;
+      --blue-accent: #1e3a5f;
+      --text-main: #e2e8f0;
+      --text-muted: #94a3b8;
+      --cyan: #38bdf8;
+      --cyan-bright: #00d4ff;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --purple: #a855f7;
+      --border: #1e3a5f;
+      --font-scale: 1;
+      --nav-height: 58px;
+      --radius: 12px;
+      --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+    }
+
+    html[data-theme="light"] {
+      --bg-main: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-elevated: #e2e8f0;
+      --blue-accent: #cbd5e1;
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --cyan: #0284c7;
+      --cyan-bright: #0369a1;
+      --emerald: #059669;
+      --amber: #d97706;
+      --rose: #e11d48;
+      --purple: #7e22ce;
+      --border: #cbd5e1;
+      --shadow: 0 8px 20px -4px rgba(15, 23, 42, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html {
+      font-size: calc(16px * var(--font-scale));
+      scroll-behavior: smooth;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+      padding-top: calc(var(--nav-height) + 4px);
+      padding-bottom: 90px;
+      overflow-x: hidden;
+    }
+
+    /* BARRA DE PROGRESO DE LECTURA */
+    #reading-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple), var(--emerald));
+      z-index: 60;
+      transition: width 0.15s ease-out;
+    }
+
+    /* BARRA DE NAVEGACIÓN SUPERIOR FIJA */
+    nav#top-nav {
+      position: fixed;
+      top: 4px;
+      left: 0;
+      right: 0;
+      height: var(--nav-height);
+      background: rgba(15, 23, 42, 0.96);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      overflow-x: auto;
+      white-space: nowrap;
+      z-index: 40;
+      scrollbar-width: none;
+    }
+
+    html[data-theme="light"] nav#top-nav {
+      background: rgba(255, 255, 255, 0.96);
+    }
+
+    nav#top-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      min-height: 42px;
+      padding: 6px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 0.875rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      text-decoration: none;
+    }
+
+    .chip:hover, .chip:focus-visible {
+      border-color: var(--cyan);
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+
+    .chip.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(168, 85, 247, 0.22));
+      border-color: var(--cyan-bright);
+      color: var(--cyan-bright);
+      box-shadow: 0 0 12px rgba(0, 212, 255, 0.25);
+    }
+
+    #mb {
+      background: var(--blue-accent);
+      color: #ffffff;
+      border-color: var(--cyan);
+      font-weight: 700;
+      position: sticky;
+      left: 0;
+      z-index: 42;
+      box-shadow: 4px 0 12px rgba(0,0,0,0.4);
+    }
+
+    /* PANEL LATERAL ÍNDICE (#dr) */
+    #dr {
+      position: fixed;
+      top: 62px;
+      left: 0;
+      bottom: 0;
+      width: min(330px, 88vw);
+      background: #0f172a;
+      border-right: 1px solid #1e3a5f;
+      transform: translateX(-105%);
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 45;
+      overflow-y: auto;
+      padding: 12px 10px 80px 10px;
+      box-shadow: 10px 0 30px rgba(0, 0, 0, 0.7);
+    }
+
+    #dr.o {
+      transform: none;
+    }
+
+    #dr a {
+      display: flex;
+      align-items: center;
+      padding: 12px 14px;
+      margin-bottom: 4px;
+      border-radius: 8px;
+      color: #e2e8f0;
+      cursor: pointer;
+      min-height: 44px;
+      font-size: 0.92rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+      border: 1px solid transparent;
+    }
+
+    #dr a:hover, #dr a:focus-visible {
+      background: #ffffff0d;
+      border-color: #1e3a5f;
+      outline: none;
+    }
+
+    #dr a.on {
+      background: #00d4ff22;
+      color: #00d4ff;
+      font-weight: 700;
+      border-color: #00d4ff55;
+    }
+
+    /* BARRA DE HERRAMIENTAS SECUNDARIA */
+    .utility-bar {
+      max-width: 1120px;
+      margin: 10px auto 0;
+      padding: 8px 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+    }
+
+    .search-wrapper {
+      flex: 1 1 200px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-main);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 4px 10px;
+      min-height: 42px;
+    }
+
+    .search-wrapper input {
+      width: 100%;
+      background: transparent;
+      border: none;
+      color: var(--text-main);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .tool-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .btn-tool {
+      min-height: 42px;
+      min-width: 42px;
+      padding: 6px 11px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--bg-elevated);
+      color: var(--text-main);
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .btn-tool:hover, .btn-tool:focus-visible {
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    /* RESULTADOS DE BÚSQUEDA INTERNA */
+    #search-results-box {
+      max-width: 1120px;
+      margin: 8px auto;
+      padding: 14px;
+      background: var(--bg-card);
+      border: 2px solid var(--cyan);
+      border-radius: var(--radius);
+      display: none;
+    }
+
+    .search-hit {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      border-radius: 6px;
+    }
+
+    .search-hit:hover {
+      background: var(--bg-elevated);
+    }
+
+    /* CONTENEDOR PRINCIPAL Y SECCIONES */
+    main {
+      max-width: 1120px;
+      margin: 12px auto;
+      padding: 0 10px;
+    }
+
+    .tab-section {
+      display: none;
+      animation: fadeIn 0.25s ease-out;
+    }
+
+    .tab-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* TIPOGRAFÍA Y TARJETAS */
+    h1 {
+      font-size: clamp(1.5rem, 5vw, 2.35rem);
+      line-height: 1.2;
+      margin-bottom: 14px;
+      color: var(--text-main);
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: clamp(1.3rem, 4vw, 1.85rem);
+      color: var(--cyan);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--border);
+    }
+
+    h3 {
+      font-size: clamp(1.08rem, 3.2vw, 1.35rem);
+      color: var(--text-main);
+      margin: 18px 0 10px;
+    }
+
+    h4 {
+      font-size: 1rem;
+      color: var(--emerald);
+      margin: 12px 0 6px;
+    }
+
+    p {
+      margin-bottom: 12px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    @media (min-width: 720px) {
+      .grid-2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    /* ETIQUETAS PEDAGÓGICAS */
+    .pedagogy-pill {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 8px;
+    }
+
+    .pill-what { background: rgba(56, 189, 248, 0.18); color: var(--cyan); border: 1px solid var(--cyan); }
+    .pill-why { background: rgba(168, 85, 247, 0.18); color: var(--purple); border: 1px solid var(--purple); }
+    .pill-how { background: rgba(16, 185, 129, 0.18); color: var(--emerald); border: 1px solid var(--emerald); }
+    .pill-warn { background: rgba(244, 63, 94, 0.18); color: var(--rose); border: 1px solid var(--rose); }
+    .pill-lvl1 { background: rgba(16, 185, 129, 0.2); color: #34d399; border: 1px solid #10b981; }
+    .pill-lvl2 { background: rgba(245, 158, 11, 0.2); color: #fbbf24; border: 1px solid #f59e0b; }
+    .pill-lvl3 { background: rgba(244, 63, 94, 0.2); color: #fb7185; border: 1px solid #f43f5e; }
+
+    /* SVG HERO CONTAINER (4:5 VERTICAL ADAPTATIVO) */
+    .svg-hero-box {
+      width: 100%;
+      max-width: 440px;
+      aspect-ratio: 4 / 5;
+      margin: 0 auto 18px;
+      background: radial-gradient(circle at 50% 35%, #172554 0%, #090d16 100%);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      position: relative;
+      box-shadow: 0 14px 35px rgba(0, 212, 255, 0.18);
+    }
+
+    .svg-hero-box svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .svg-hero-box *, .svg-anim-el {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+
+    /* TABLAS ADAPTABLES MÓVIL 360px */
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+      margin: 14px 0;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 310px;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--blue-accent);
+      color: #ffffff;
+      font-weight: 700;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* BLOQUES COPIABLES Y PROMPTS */
+    .copy-block {
+      background: #060911;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin: 12px 0;
+      overflow: hidden;
+    }
+
+    html[data-theme="light"] .copy-block {
+      background: #1e293b;
+      color: #f8fafc;
+    }
+
+    .copy-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: rgba(30, 58, 95, 0.55);
+      border-bottom: 1px solid var(--border);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--cyan);
+      gap: 8px;
+    }
+
+    .btn-copy {
+      min-height: 38px;
+      padding: 6px 14px;
+      border-radius: 6px;
+      border: 1px solid var(--cyan);
+      background: rgba(56, 189, 248, 0.15);
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .btn-copy:hover {
+      background: var(--cyan);
+      color: #090d16;
+    }
+
+    .copy-content {
+      padding: 14px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.86rem;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #e2e8f0;
+      line-height: 1.5;
+    }
+
+    /* LISTAS DE COMPROBACIÓN INTERACTIVAS */
+    .checklist-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px;
+      margin-bottom: 8px;
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      min-height: 46px;
+    }
+
+    .checklist-item input[type="checkbox"] {
+      width: 22px;
+      height: 22px;
+      margin-top: 2px;
+      accent-color: var(--emerald);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .checklist-item.done {
+      border-color: var(--emerald);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    /* ACORDEONES / DETAILS */
+    details.qa-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    details.qa-card summary {
+      padding: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 48px;
+    }
+
+    details.qa-card summary::-webkit-details-marker {
+      display: none;
+    }
+
+    details.qa-card summary::after {
+      content: "＋";
+      color: var(--cyan);
+      font-size: 1.2rem;
+      font-weight: 900;
+      flex-shrink: 0;
+    }
+
+    details.qa-card[open] summary::after {
+      content: "－";
+      color: var(--emerald);
+    }
+
+    details.qa-card .qa-body {
+      padding: 0 14px 14px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      color: var(--text-main);
+    }
+
+    /* NAVEGACIÓN FIJA AL FINAL DE CADA PESTAÑA (ANTERIOR / SIGUIENTE) */
+    .tab-footer-nav {
+      margin-top: 26px;
+      padding: 16px;
+      background: var(--bg-card);
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .btn-step-nav {
+      flex: 1 1 140px;
+      min-height: 48px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--cyan);
+      background: linear-gradient(135deg, var(--blue-accent), var(--bg-elevated));
+      color: #ffffff;
+      font-weight: 700;
+      font-size: 0.92rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    .btn-step-nav:hover {
+      background: var(--cyan);
+      color: #090d16;
+    }
+
+    /* BOTONES FLOTANTES ARRASTRABLES (MOVIBLES) */
+    .draggable-fab {
+      position: fixed;
+      z-index: 55;
+      min-height: 46px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-weight: 800;
+      font-size: 0.82rem;
+      color: #ffffff;
+      cursor: grab;
+      touch-action: none;
+      user-select: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.65);
+      border: 2px solid #ffffff44;
+    }
+
+    .draggable-fab:active {
+      cursor: grabbing;
+      transform: scale(1.04);
+    }
+
+    #fab-home {
+      bottom: 18px;
+      left: 12px;
+      background: linear-gradient(135deg, #0284c7, #1e3a8a);
+      border-color: var(--cyan-bright);
+    }
+
+    #fab-top {
+      bottom: 18px;
+      right: 12px;
+      background: linear-gradient(135deg, #059669, #065f46);
+      border-color: #34d399;
+    }
+
+    /* PESTAÑA CRÉDITOS DESTACADA */
+    .author-highlight {
+      font-size: clamp(2rem, 7vw, 3.2rem);
+      font-weight: 900;
+      background: linear-gradient(90deg, #38bdf8, #a855f7, #10b981);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+      margin: 14px 0 4px;
+      letter-spacing: -0.02em;
+    }
+
+    .step-box {
+      border-left: 4px solid var(--cyan);
+      padding-left: 14px;
+      margin: 14px 0;
+    }
+
+    .badge-ok { color: var(--emerald); font-weight: 700; }
+    .badge-err { color: var(--rose); font-weight: 700; }
+
+    /* OPTIMIZACIÓN ESPECÍFICA SAMSUNG GALAXY A02s (360x800) */
+    @media (max-width: 380px) {
+      body {
+        padding-left: 2px;
+        padding-right: 2px;
+      }
+      main {
+        padding: 0 6px;
+      }
+      .card {
+        padding: 12px;
+      }
+      .chip {
+        padding: 6px 11px;
+        font-size: 0.82rem;
+      }
+      .draggable-fab {
+        padding: 8px 11px;
+        font-size: 0.78rem;
+      }
+    }
+
+    /* ESTILOS DE IMPRESIÓN Y PDF A4 */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 14mm 12mm 14mm 12mm;
+      }
+      html, body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding: 0 !important;
+        font-size: 11pt !important;
+      }
+      nav#top-nav, #dr, .utility-bar, .draggable-fab, .tab-footer-nav, .btn-copy, #reading-progress, #search-results-box {
+        display: none !important;
+      }
+      .tab-section {
+        display: block !important;
+        page-break-after: always;
+        opacity: 1 !important;
+        transform: none !important;
+      }
+      .card, details.qa-card, .copy-block, .checklist-item {
+        background: #ffffff !important;
+        color: #000000 !important;
+        border: 1px solid #444444 !important;
+        box-shadow: none !important;
+        break-inside: avoid;
+      }
+      .copy-content {
+        color: #000000 !important;
+        background: #f8fafc !important;
+      }
+      h1, h2, h3, h4, .author-highlight {
+        color: #000000 !important;
+        -webkit-text-fill-color: #000000 !important;
+      }
+      .svg-hero-box {
+        max-width: 260px !important;
+        border: 1px solid #000000 !important;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra de progreso superior -->
+  <div id="reading-progress" aria-hidden="true"></div>
+
+  <!-- Fuente SVG única oculta (se extrae por JS y se elimina del DOM para cumplir regla estricta) -->
+  <div id="svg-master-source" style="display:none;" aria-hidden="true">
+    <svg viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Ilustración animada de Academia Online generada por Inteligencia Artificial en Coderick con pasarela Stripe, vídeos, comunidad gamificada y dominio propio">
+      <defs>
+        <linearGradient id="bgGrad__UID__" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#060b19"/>
+          <stop offset="50%" stop-color="#0f172a"/>
+          <stop offset="100%" stop-color="#1e1b4b"/>
+        </linearGradient>
+        <linearGradient id="coreGrad__UID__" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#00d4ff"/>
+          <stop offset="50%" stop-color="#38bdf8"/>
+          <stop offset="100%" stop-color="#a855f7"/>
+        </linearGradient>
+        <linearGradient id="goldGrad__UID__" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#10b981"/>
+        </linearGradient>
+        <radialGradient id="haloGrad__UID__" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#00d4ff" stop-opacity="0.45"/>
+          <stop offset="65%" stop-color="#a855f7" stop-opacity="0.15"/>
+          <stop offset="100%" stop-color="#0f172a" stop-opacity="0"/>
+        </radialGradient>
+        <filter id="glow__UID__" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="5" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+      </defs>
+
+      <!-- Fondo Cósmico Tecnológico -->
+      <rect width="400" height="500" fill="url(#bgGrad__UID__)"/>
+
+      <!-- Rejilla de Perspectiva Arquitectónica Sin Servidor -->
+      <g stroke="#1e3a5f" stroke-width="1" opacity="0.45">
+        <line x1="0" y1="80" x2="400" y2="80"/>
+        <line x1="0" y1="160" x2="400" y2="160"/>
+        <line x1="0" y1="240" x2="400" y2="240"/>
+        <line x1="0" y1="320" x2="400" y2="320"/>
+        <line x1="0" y1="400" x2="400" y2="400"/>
+        <line x1="80" y1="0" x2="80" y2="500"/>
+        <line x1="160" y1="0" x2="160" y2="500"/>
+        <line x1="240" y1="0" x2="240" y2="500"/>
+        <line x1="320" y1="0" x2="320" y2="500"/>
+      </g>
+
+      <!-- Halo de Energía Central IA -->
+      <circle cx="200" cy="235" r="145" fill="url(#haloGrad__UID__)">
+        <animate attributeName="r" values="130;155;130" dur="4.5s" repeatCount="indefinite"/>
+        <animate attributeName="opacity" values="0.7;1;0.7" dur="4.5s" repeatCount="indefinite"/>
+      </circle>
+
+      <!-- Anillos Orbitales Multicapa (Ecosistema LMS + IA) -->
+      <g transform="translate(200, 235)">
+        <circle r="122" fill="none" stroke="#38bdf8" stroke-width="1.5" stroke-dasharray="12 8 4 8" opacity="0.65">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="22s" repeatCount="indefinite"/>
+        </circle>
+        <circle r="96" fill="none" stroke="#a855f7" stroke-width="2" stroke-dasharray="28 14" opacity="0.75">
+          <animateTransform attributeName="transform" type="rotate" from="360" to="0" dur="15s" repeatCount="indefinite"/>
+        </circle>
+        <ellipse rx="135" ry="52" fill="none" stroke="#10b981" stroke-width="1.4" stroke-dasharray="6 10" opacity="0.6">
+          <animateTransform attributeName="transform" type="rotate" from="0" to="360" dur="18s" repeatCount="indefinite"/>
+        </ellipse>
+      </g>
+
+      <!-- Líneas de Conexión Neuronal desde el Prompt hacia los Módulos -->
+      <g stroke="url(#coreGrad__UID__)" stroke-width="2.2" fill="none">
+        <!-- Hacia Vídeo / Cursos (Arriba Izquierda) -->
+        <path d="M200,235 L95,120" stroke-dasharray="6 6">
+          <animate attributeName="stroke-dashoffset" values="24;0" dur="1.5s" repeatCount="indefinite"/>
+        </path>
+        <!-- Hacia Stripe / Pagos 0% Comisión (Arriba Derecha) -->
+        <path d="M200,235 L305,120" stroke-dasharray="6 6">
+          <animate attributeName="stroke-dashoffset" values="24;0" dur="1.5s" repeatCount="indefinite"/>
+        </path>
+        <!-- Hacia Foro Skool / Gamificación (Abajo Izquierda) -->
+        <path d="M200,235 L90,345" stroke-dasharray="6 6">
+          <animate attributeName="stroke-dashoffset" values="24;0" dur="1.5s" repeatCount="indefinite"/>
+        </path>
+        <!-- Hacia Dominio Propio / RGPD (Abajo Derecha) -->
+        <path d="M200,235 L310,345" stroke-dasharray="6 6">
+          <animate attributeName="stroke-dashoffset" values="24;0" dur="1.5s" repeatCount="indefinite"/>
+        </path>
+      </g>
+
+      <!-- NODO 1: Reproductor de Vídeo y Lecciones (Arriba Izquierda) -->
+      <g transform="translate(45, 78)">
+        <animateTransform attributeName="transform" type="translate" values="45,78; 45,70; 45,78" dur="3.6s" repeatCount="indefinite"/>
+        <rect width="105" height="68" rx="10" fill="#0f172a" stroke="#38bdf8" stroke-width="2" filter="url(#glow__UID__)"/>
+        <polygon points="44,22 44,46 66,34" fill="#00d4ff"/>
+        <rect x="12" y="54" width="80" height="5" rx="2.5" fill="#1e3a5f"/>
+        <rect x="12" y="54" width="55" height="5" rx="2.5" fill="#10b981">
+          <animate attributeName="width" values="15;78;15" dur="4s" repeatCount="indefinite"/>
+        </rect>
+        <text x="52" y="16" fill="#e2e8f0" font-size="9" font-weight="bold" text-anchor="middle">CURSOS &amp; VÍDEO</text>
+      </g>
+
+      <!-- NODO 2: Pasarela Stripe Directa 0% Comisiones (Arriba Derecha) -->
+      <g transform="translate(250, 78)">
+        <animateTransform attributeName="transform" type="translate" values="250,78; 250,86; 250,78" dur="3.9s" repeatCount="indefinite"/>
+        <rect width="105" height="68" rx="10" fill="#0f172a" stroke="#10b981" stroke-width="2" filter="url(#glow__UID__)"/>
+        <text x="52" y="20" fill="#10b981" font-size="9.5" font-weight="bold" text-anchor="middle">STRIPE DIRECTO</text>
+        <circle cx="32" cy="42" r="13" fill="#10b981" opacity="0.25"/>
+        <text x="32" y="47" fill="#34d399" font-size="15" font-weight="bold" text-anchor="middle">€</text>
+        <text x="72" y="40" fill="#e2e8f0" font-size="10" font-weight="bold" text-anchor="middle">0% Fee</text>
+        <text x="72" y="53" fill="#38bdf8" font-size="8.5" text-anchor="middle">100% Tuyo</text>
+      </g>
+
+      <!-- NODO 3: Comunidad Skool + Gamificación (Abajo Izquierda) -->
+      <g transform="translate(40, 315)">
+        <animateTransform attributeName="transform" type="translate" values="40,315; 40,307; 40,315" dur="4.2s" repeatCount="indefinite"/>
+        <rect width="110" height="68" rx="10" fill="#0f172a" stroke="#a855f7" stroke-width="2" filter="url(#glow__UID__)"/>
+        <text x="55" y="19" fill="#d8b4fe" font-size="9" font-weight="bold" text-anchor="middle">FORO SKOOL + PTS</text>
+        <polygon points="30,30 34,39 44,40 36,46 38,56 30,50 22,56 24,46 16,40 26,39" fill="#f59e0b">
+          <animateTransform attributeName="transform" type="scale" values="1;1.12;1" additive="sum" dur="2s" repeatCount="indefinite"/>
+        </polygon>
+        <text x="75" y="42" fill="#fbbf24" font-size="11" font-weight="bold" text-anchor="middle">+500 Pts</text>
+        <text x="75" y="55" fill="#94a3b8" font-size="8" text-anchor="middle">Comunidad</text>
+      </g>
+
+      <!-- NODO 4: Dominio Propio + Sin Plugins (Abajo Derecha) -->
+      <g transform="translate(250, 315)">
+        <animateTransform attributeName="transform" type="translate" values="250,315; 250,323; 250,315" dur="3.5s" repeatCount="indefinite"/>
+        <rect width="110" height="68" rx="10" fill="#0f172a" stroke="#f59e0b" stroke-width="2" filter="url(#glow__UID__)"/>
+        <text x="55" y="19" fill="#fbbf24" font-size="9" font-weight="bold" text-anchor="middle">DOMINIO PROPIO</text>
+        <rect x="14" y="28" width="82" height="20" rx="5" fill="#1e293b" stroke="#38bdf8" stroke-width="1"/>
+        <text x="55" y="41" fill="#38bdf8" font-size="8.5" font-weight="bold" text-anchor="middle">tuacademia.com</text>
+        <text x="55" y="60" fill="#10b981" font-size="8" font-weight="bold" text-anchor="middle">✓ Sin WordPress</text>
+      </g>
+
+      <!-- NÚCLEO CENTRAL: CEREBRO CODERICK IA + BIRRETE ACADÉMICO -->
+      <g transform="translate(200, 235)">
+        <polygon points="0,-54 47,-27 47,27 0,54 -47,27 -47,-27" fill="#0f172a" stroke="url(#coreGrad__UID__)" stroke-width="3.5" filter="url(#glow__UID__)">
+          <animateTransform attributeName="transform" type="scale" values="1;1.06;1" dur="2.8s" repeatCount="indefinite"/>
+        </polygon>
+        <!-- Birrete de Graduación Vectorial -->
+        <polygon points="0,-32 30,-17 0,-2 -30,-17" fill="#00d4ff"/>
+        <path d="M-18,-10 L-18,4 C-18,12 18,12 18,4 L18,-10" fill="#1e3a5f" stroke="#38bdf8" stroke-width="1.5"/>
+        <line x1="24" y1="-14" x2="28" y2="8" stroke="#f59e0b" stroke-width="2.5"/>
+        <circle cx="28" cy="10" r="3.5" fill="#f59e0b">
+          <animate attributeName="cx" values="26;31;26" dur="1.8s" repeatCount="indefinite"/>
+        </circle>
+        <text x="0" y="26" fill="#ffffff" font-size="11" font-weight="900" text-anchor="middle">CODERICK IA</text>
+        <text x="0" y="39" fill="#34d399" font-size="8" font-weight="bold" text-anchor="middle">50.000 CRÉDITOS</text>
+      </g>
+
+      <!-- CABECERA: CONTADOR DE CRÉDITOS E IMPACTO -->
+      <g transform="translate(50, 18)">
+        <rect width="300" height="38" rx="19" fill="#0f172a" stroke="url(#goldGrad__UID__)" stroke-width="2"/>
+        <circle cx="24" cy="19" r="8" fill="#10b981">
+          <animate attributeName="opacity" values="1;0.3;1" dur="1.2s" repeatCount="indefinite"/>
+        </circle>
+        <text x="160" y="24" fill="#ffffff" font-size="11.5" font-weight="bold" text-anchor="middle">ACADEMIA IA EN 10 MIN • 0€ HOSTING</text>
+      </g>
+
+      <!-- BARRA INFERIOR: TERMINAL DE PROMPT EN TIEMPO REAL (VOZ Y TEXTO) -->
+      <g transform="translate(24, 418)">
+        <rect width="352" height="62" rx="12" fill="#060b19" stroke="#38bdf8" stroke-width="2"/>
+        <text x="16" y="22" fill="#38bdf8" font-size="9.5" font-weight="bold" font-family="monospace">&gt; PROMPT IA (10.000 chars) + COMANDO DE VOZ:</text>
+        <text x="16" y="42" fill="#e2e8f0" font-size="10.5" font-family="monospace">"Crea mi academia con foro, cursos y Stripe"</text>
+        <!-- Cursor Parpadeante -->
+        <rect x="302" y="31" width="7" height="14" fill="#10b981">
+          <animate attributeName="opacity" values="1;0;1" dur="0.9s" repeatCount="indefinite"/>
+        </rect>
+        <!-- Ondas de Micrófono / Voz Activa -->
+        <g transform="translate(328, 36)">
+          <circle r="10" fill="#f43f5e" opacity="0.25">
+            <animate attributeName="r" values="7;15;7" dur="1.4s" repeatCount="indefinite"/>
+          </circle>
+          <circle r="5" fill="#f43f5e"/>
+        </g>
+        <text x="16" y="55" fill="#94a3b8" font-size="8" font-family="sans-serif">SiteGround Infrastructure • Sin WordPress • Rollback 1-Click</text>
+      </g>
+
+      <!-- Partículas de Datos Flotantes -->
+      <circle cx="140" cy="175" r="3.5" fill="#00d4ff">
+        <animate attributeName="cy" values="195;140;195" dur="3s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="265" cy="175" r="3.5" fill="#10b981">
+        <animate attributeName="cy" values="145;195;145" dur="2.7s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="145" cy="300" r="3.5" fill="#a855f7">
+        <animate attributeName="cy" values="280;325;280" dur="3.2s" repeatCount="indefinite"/>
+      </circle>
+      <circle cx="260" cy="300" r="3.5" fill="#f59e0b">
+        <animate attributeName="cy" values="325;280;325" dur="2.9s" repeatCount="indefinite"/>
+      </circle>
+    </svg>
+  </div>
+
+  <!-- BARRA DE NAVEGACIÓN SUPERIOR FIJA CON BOTÓN SÁNDWICH ÍNDICE -->
+  <nav id="top-nav" aria-label="Navegación principal del tutorial">
+    <button class="chip" id="mb" aria-label="Abrir índice" aria-expanded="false">☰ Índice</button>
+    <button class="chip active" data-tab="0">INICIO</button>
+    <button class="chip" data-tab="1">CONCEPTOS</button>
+    <button class="chip" data-tab="2">PROCEDIMIENTO</button>
+    <button class="chip" data-tab="3">PRÁCTICA</button>
+    <button class="chip" data-tab="4">PROMPTS</button>
+    <button class="chip" data-tab="5">33 Preguntas (Q&amp;A)</button>
+    <button class="chip" data-tab="6">ERRORES</button>
+    <button class="chip" data-tab="7">RESUMEN</button>
+    <button class="chip" data-tab="8">FUENTES</button>
+    <button class="chip" data-tab="9">CRÉDITOS</button>
+  </nav>
+
+  <!-- PANEL LATERAL DESLIZANTE DEL ÍNDICE (#dr) -->
+  <div id="dr" role="navigation" aria-label="Índice completo de secciones"></div>
+
+  <!-- BARRA DE HERRAMIENTAS INTERACTIVAS -->
+  <div class="utility-bar" role="region" aria-label="Herramientas de lectura y accesibilidad">
+    <div class="search-wrapper">
+      <span aria-hidden="true">🔍</span>
+      <input type="search" id="global-search" placeholder="Buscar en todo el tutorial (ej. Stripe, DNS, Skool)..." aria-label="Buscar término en el tutorial">
+    </div>
+    <div class="tool-buttons">
+      <button type="button" class="btn-tool" id="btn-font-dec" title="Reducir tamaño de letra" aria-label="Reducir tamaño de letra">A−</button>
+      <button type="button" class="btn-tool" id="btn-font-inc" title="Aumentar tamaño de letra" aria-label="Aumentar tamaño de letra">A+</button>
+      <button type="button" class="btn-tool" id="btn-theme-toggle" title="Cambiar entre tema oscuro y claro" aria-label="Cambiar tema visual">🌓 Tema</button>
+      <button type="button" class="btn-tool" id="btn-print-pdf" title="Imprimir o guardar como PDF A4" aria-label="Imprimir o guardar como PDF">🖨️ PDF</button>
+    </div>
+  </div>
+
+  <!-- CAJA DE RESULTADOS DE BÚSQUEDA -->
+  <div id="search-results-box" role="region" aria-live="polite"></div>
+
+  <!-- CONTENIDO PRINCIPAL SPA -->
+  <main id="main-container">
+
+    <!-- ==================== PESTAÑA 0: INICIO ==================== -->
+    <section class="tab-section active" id="sec-0" data-t="INICIO">
+      <div class="svg-hero-box" id="svg-mount-home" role="img" aria-label="Ilustración animada principal de Coderick IA creando una academia online con área de alumnos, vídeos, foro Skool y cobros por Stripe"></div>
+
+      <div class="card">
+        <span class="pedagogy-pill pill-what">Guía Maestra Paso a Paso • Nivel Principiante a Pro</span>
+        <h1>Crea tu Academia Online GRATIS con Coderick e Inteligencia Artificial</h1>
+        <p>Bienvenido al manual interactivo completo basado en la metodología documental de <strong>Gonzalo de la Campa / Escuela.com</strong> (<em>«¡Esto antes ERA IMPOSIBLE! 🎓 Crea tu Academia Online GRATIS con Coderick»</em>). Aprenderás desde cero, sin conocimientos previos de programación ni diseño web, a construir, configurar, monetizar y publicar tu propia escuela online 100% en propiedad.</p>
+
+        <div style="display:flex; flex-wrap:wrap; gap:10px; margin:16px 0;">
+          <button type="button" class="chip" id="ix" style="background:var(--blue-accent); color:#fff; border-color:var(--cyan);">☰ Ver índice</button>
+          <button type="button" class="chip" onclick="window.tutorialApp.goToSection(2)">🚀 Ir al Procedimiento Paso a Paso</button>
+          <button type="button" class="chip" onclick="window.tutorialApp.goToSection(4)">📋 Copiar Prompts Maestros</button>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <span class="pedagogy-pill pill-why">¿Por qué este método cambia las reglas?</span>
+          <h3>Adiós a las barreras técnicas y comisiones abusivas</h3>
+          <p>Hasta ahora, montar una academia exigía elegir entre dos caminos complejos: configurar <strong>WordPress</strong> con decenas de plugins que pueden romperse al actualizar, o ceder un porcentaje de cada venta a plataformas cerradas como <strong>Hotmart o Udemy</strong>.</p>
+          <p>Con <strong>Coderick de SiteGround</strong>, la Inteligencia Artificial construye en menos de <strong>10 minutos</strong> el sitio público (Frontend), el área privada del alumno, el foro comunitario con puntos y el panel del profesor conectado directamente a tu cuenta bancaria mediante <strong>Stripe</strong>.</p>
+        </div>
+
+        <div class="card">
+          <span class="pedagogy-pill pill-how">Métricas Clave Documentadas</span>
+          <h3>Datos exactos del sistema</h3>
+          <ul style="padding-left:18px; line-height:1.8;">
+            <li><strong>Créditos iniciales gratuitos:</strong> 50.000 créditos al registrarte en Coderick.</li>
+            <li><strong>Consumo real de una academia:</strong> Aproximadamente 8.000 créditos para una escuela completa.</li>
+            <li><strong>Capacidad del Prompt Inicial:</strong> Hasta 10.000 caracteres por solicitud.</li>
+            <li><strong>Comisión de Coderick por venta:</strong> 0% (tus ingresos van directos vía Stripe).</li>
+            <li><strong>Tiempo estimado de despliegue:</strong> Menos de 10 minutos de 0 a 100.</li>
+            <li><strong>Único gasto externo para salir en vivo:</strong> Tu dominio personalizado (~10 € - 15 €/año).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Ruta de Aprendizaje Pedagógica de este Tutorial</h3>
+        <p>Este manual aplica la secuencia didáctica <strong>QUÉ ES → PARA QUÉ SIRVE → POR QUÉ IMPORTA → CÓMO SE HACE → EJEMPLO → PRÁCTICA → PROMPTS → 33 PREGUNTAS → ERRORES → RESUMEN</strong>. Puedes navegar usando la barra superior, el botón <strong>☰ Índice</strong>, los botones flotantes arrastrables o los controles al pie de cada página.</p>
+      </div>
+
+      <div class="tab-footer-nav">
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(1)">Siguiente: 1. CONCEPTOS ➔</button>
+      </div>
+    </section>
+
+    <!-- ==================== PESTAÑA 1: CONCEPTOS ==================== -->
+    <section class="tab-section" id="sec-1" data-t="CONCEPTOS">
+      <h2>Módulo 0 y 1: Fundamentos, Arquitectura y Comparativa Técnica</h2>
+
+      <div class="card">
+        <span class="pedagogy-pill pill-what">¿Qué es y para qué sirve?</span>
+        <h3>0.1. ¿Qué es Coderick de SiteGround?</h3>
+        <p><strong>Coderick</strong> es una plataforma de desarrollo web impulsada por Inteligencia Artificial creada por el reconocido proveedor internacional de alojamiento web <strong>SiteGround</strong>. Sirve para generar aplicaciones web completas, academias online con área privada de estudio, foros comunitarios de alumnos y pasarelas de cobro simplemente escribiendo instrucciones en lenguaje natural (<em>prompts</em> de texto) o dictando comandos de voz en español.</p>
+        <p><strong>¿Por qué importa para un principiante?</strong> Porque elimina por completo la programación, la contratación de servidores externos y la instalación de plugins incompatibles. La IA genera simultáneamente el diseño visual, la base de datos interna y el sistema de acceso con usuario y contraseña.</p>
+      </div>
+
+      <div class="card">
+        <span class="pedagogy-pill pill-why">Análisis Comparativo</span>
+        <h3>0.2. Comparativa: Coderick vs. WordPress vs. Hotmart / Udemy</h3>
+        <p>Antes de construir tu escuela, comprende las diferencias estructurales entre las tres opciones del mercado:</p>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Criterio Técnico / Comercial</th>
+                <th>Coderick (SiteGround IA)</th>
+                <th>WordPress Self-Hosted (LMS)</th>
+                <th>Hotmart / Udemy / Teachable</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Necesidad de Hosting y Plugins</strong></td>
+                <td><span class="badge-ok">Ninguna (Sin servidor ni plugins)</span></td>
+                <td><span class="badge-err">Obligatorio (Hosting + LearnDash/LifterLMS)</span></td>
+                <td>No requiere hosting propio</td>
+              </tr>
+              <tr>
+                <td><strong>Comisiones por cada Venta</strong></td>
+                <td><span class="badge-ok">0% de comisión de plataforma (Vía Stripe)</span></td>
+                <td>0% (pero exige mantener plugins de pago)</td>
+                <td><span class="badge-err">Altas comisiones por transacción o mensualidad</span></td>
+              </tr>
+              <tr>
+                <td><strong>Propiedad de Alumnos y Dominio</strong></td>
+                <td><span class="badge-ok">100% en propiedad y en tu dominio</span></td>
+                <td>100% en propiedad</td>
+                <td><span class="badge-err">Base de datos e infraestructura controladas por terceros</span></td>
+              </tr>
+              <tr>
+                <td><strong>Tiempo de Creación Inicial</strong></td>
+                <td><span class="badge-ok">Menos de 10 minutos con IA</span></td>
+                <td>Días o semanas de configuración técnica</td>
+                <td>Horas, pero limitado a plantillas rígidas</td>
+              </tr>
+              <tr>
+                <td><strong>Mantenimiento y Actualizaciones</strong></td>
+                <td><span class="badge-ok">Mantenimiento cero (Automático)</span></td>
+                <td><span class="badge-err">Constante (riesgo de rotura por conflictos PHP/plugins)</span></td>
+                <td>Gestionado por el intermediario</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <span class="pedagogy-pill pill-how">Economía de Créditos</span>
+          <h3>0.3. Modelo de Créditos y Costes Reales</h3>
+          <p>Al abrir una cuenta en Coderick recibes <strong>50.000 créditos gratuitos</strong>. Según las pruebas documentadas en el caso real, generar la estructura íntegra de una academia online consume alrededor de <strong>8.000 créditos</strong>.</p>
+          <p>Esto significa que con el saldo gratuito inicial puedes crear tu academia y realizar múltiples ajustes. Si en proyectos muy complejos llegas a agotar los 50.000 créditos, existen paquetes de recarga por <strong>10 €, 20 € o 40 €</strong>. El único coste externo para operar con tu marca propia en internet es comprar un dominio personalizado (aprox. <strong>10 € a 15 € al año</strong>).</p>
+        </div>
+
+        <div class="card">
+          <span class="pedagogy-pill pill-what">Infraestructura Gestionada</span>
+          <h3>0.4. Arquitectura sin Servidor ni Plugins</h3>
+          <p>En un sistema tradicional con WordPress debes preocuparte por versiones de PHP, bases de datos MySQL expuestas, parches de seguridad y copias de seguridad manuales. En Coderick, todo corre sobre la infraestructura gestionada de SiteGround: el código, la base de datos y la lógica de usuarios se crean e integran de forma nativa y transparente.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>1. Requisitos Previos y Diseño Instruccional Básico</h3>
+        <div class="step-box">
+          <h4>1.1. Tres cuentas gratuitas para empezar</h4>
+          <p>1) Cuenta activa en <strong>Coderick</strong> (con tus 50.000 créditos gratis). 2) Cuenta en <strong>ChatGPT o Google Gemini</strong> si deseas redactar o pulir tu prompt maestro inicial. 3) Cuenta gratuita en <strong>Stripe</strong> para recibir el dinero de las matrículas directamente en tu banco.</p>
+        </div>
+        <div class="step-box">
+          <h4>1.2. Preparación de materiales multimedia</h4>
+          <p>Aunque la IA de Coderick genera imágenes de muestra automáticamente, conviene preparar tus fotografías de autor, portadas de curso, precios pensados y los enlaces de tus vídeos alojados en <strong>YouTube (en modo Oculto / Unlisted)</strong> o en <strong>Vimeo</strong>.</p>
+        </div>
+        <div class="step-box">
+          <h4>1.3. Diseño instruccional: Lecciones de 5 a 8 minutos</h4>
+          <p>Para lograr que tus alumnos terminen los cursos y no abandonen tu membresía, divide el temario en cursos, módulos y <strong>lecciones breves de entre 5 y 8 minutos</strong>. Este formato mejora la retención y aprovecha la barra de progreso visual del área del alumno.</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Glosario Esencial para Principiantes</h3>
+        <ul style="padding-left:18px; line-height:1.75;">
+          <li><strong>Coderick:</strong> Constructor web con Inteligencia Artificial desarrollado por SiteGround.</li>
+          <li><strong>LMS (Learning Management System):</strong> Sistema de Gestión de Aprendizaje (el software que administra cursos, alumnos y lecciones).</li>
+          <li><strong>Prompt:</strong> Instrucción en texto o voz que le das a la IA indicando qué quieres construir o modificar.</li>
+          <li><strong>Lead Magnet:</strong> Regalo gratuito (guía PDF, minicurso o clase gratis) que entregas a cambio del nombre y correo electrónico de un visitante.</li>
+          <li><strong>Drip Content (Contenido en Goteo):</strong> Liberación progresiva de lecciones (por ejemplo, desbloquear el Módulo 2 exactamente 7 días después de que el alumno se inscriba).</li>
+          <li><strong>Stripe:</strong> Pasarela mundial de pagos con tarjeta que transfiere el dinero de las ventas a tu cuenta bancaria sin intermediarios de cursos.</li>
+          <li><strong>RGPD:</strong> Reglamento General de Protección de Datos europeo, obligatorio en todo formulario que recoja datos personales.</li>
+          <li><strong>Registros DNS (A / CNAME):</strong> Indicaciones técnicas que conectan tu nombre de dominio (ej. <code>miacademia.com</code>) con el servidor donde vive tu web.</li>
+          <li><strong>Gamificación:</strong> Uso de mecánicas de juego (puntos por comentar o recibir «me gusta» en el foro) para motivar a los estudiantes.</li>
+        </ul>
+      </div>
+
+      <div class="tab-footer-nav">
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(0)">⬅ Anterior: INICIO</button>
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(2)">Siguiente: 2. PROCEDIMIENTO ➔</button>
+      </div>
+    </section>
+
+    <!-- ==================== PESTAÑA 2: PROCEDIMIENTO ==================== -->
+    <section class="tab-section" id="sec-2" data-t="PROCEDIMIENTO">
+      <h2>Módulos 2 al 7: Procedimiento Completo Paso a Paso</h2>
+      <p>Sigue cada fase en orden secuencial. Cada procedimiento incluye el <strong>Objetivo</strong>, la <strong>Explicación sencilla</strong>, los <strong>Pasos con una sola acción principal</strong>, el <strong>Motivo</strong>, el <strong>Resultado esperado</strong> y la <strong>Solución a problemas probables</strong>.</p>
+
+      <!-- FASE 1 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Fase 1 • Módulo 2: Construcción con IA</span>
+        <h3>Paso a Paso 1: Generar la Academia Base con el Prompt Inicial y Comandos de Voz</h3>
+        <p><strong>Objetivo:</strong> Crear la estructura completa (web pública, área de alumno y panel de profesor) en una sola orden de hasta 10.000 caracteres.</p>
+        <p><strong>Explicación sencilla:</strong> En lugar de diseñar página por página, le entregamos a Coderick un plano detallado en español para que programe todo automáticamente.</p>
+        <ol style="padding-left:20px; line-height:1.85; margin:12px 0;">
+          <li><strong>Acción 1:</strong> Entra en tu cuenta de Coderick y localiza la caja principal de texto (admite hasta 10.000 caracteres). <em>Motivo:</em> Es el motor de entrada donde la IA lee los requisitos arquitectónicos.</li>
+          <li><strong>Acción 2:</strong> Pega tu Prompt Inicial detallado especificando temática, Landing Page, sección Gratis (Lead Magnet), área privada de alumno con foro y panel de profesor. <em>Motivo:</em> Cuanto más estructurado sea el prompt inicial, menos créditos gastarás después en correcciones.</li>
+          <li><strong>Acción 3:</strong> Pulsa el botón de enviar y observa el panel dividido: a la izquierda verás el historial del chat, la base de datos y la analítica; a la derecha verás la previsualización en vivo. <em>Motivo:</em> Te permite supervisar en tiempo real cómo se ensamblan las secciones.</li>
+          <li><strong>Acción 4:</strong> Pulsa el icono del micrófono en el cuadro de chat o escribe en texto para pedir cambios puntuales (ejemplo: <em>«Cambia el nombre de la pestaña Testimonios por Casos de Éxito»</em>). <em>Motivo:</em> La IA actualiza tanto el menú superior como los enlaces internos y referencias de página.</li>
+          <li><strong>Acción 5:</strong> Si algún cambio visual no te convence, pulsa el botón de <strong>Restaurar versión (Rollback)</strong> en el historial izquierdo. <em>Motivo:</em> Devuelve el proyecto intacto al punto anterior sin perder datos.</li>
+        </ol>
+        <p><strong>Resultado esperado:</strong> Una academia funcional en entorno de previsualización con colores, tipografías e imágenes adaptadas a tu nicho.</p>
+        <p><strong>Solución a problema probable:</strong> Si la IA cambia el título en el menú pero olvida cambiarlo en el pie de página, indícale explícitamente: <em>«Actualiza también las URLs, el menú principal y el pie de página con el nuevo término»</em>.</p>
+      </div>
+
+      <!-- FASE 2 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Fase 2 • Módulo 3: Frontend y Captación de Leads</span>
+        <h3>Paso a Paso 2: Configurar la Landing Page, el Lead Magnet y el Cumplimiento RGPD</h3>
+        <p><strong>Objetivo:</strong> Convertir visitantes desconocidos en suscriptores gratuitos (Leads) y clientes de pago cumpliendo la ley de protección de datos.</p>
+        <ol style="padding-left:20px; line-height:1.85; margin:12px 0;">
+          <li><strong>Acción 1:</strong> Revisa que la cabecera (Hero) de la Landing Page muestre tu propuesta de valor y dos botones claros: <em>«Ver curso»</em> y <em>«Empezar gratis»</em>. <em>Motivo:</em> Guía al visitante indeciso hacia una acción inmediata.</li>
+          <li><strong>Acción 2:</strong> Verifica la pestaña o bloque de <strong>Zona Gratis (Lead Magnet)</strong> con su formulario de Nombre y Correo Electrónico. <em>Motivo:</em> Permite entregar un PDF o clase gratuita a cambio del contacto del potencial alumno.</li>
+          <li><strong>Acción 3:</strong> Comprueba los bloques de autoridad: cifras de alumnos formados, valoraciones, carrusel dinámico de logotipos colaboradores y sección de «Casos de Éxito». <em>Motivo:</em> Aporta prueba social y derriba objeciones de compra.</li>
+          <li><strong>Acción 4:</strong> Confirma que todos los formularios tengan visible la casilla de aceptación y los enlaces a la Política de Privacidad y Avisos Legales generados por Coderick. <em>Motivo:</em> Garantiza el cumplimiento estricto del RGPD.</li>
+          <li><strong>Acción 5:</strong> Configura la página de Contacto e integra un botón directo a WhatsApp junto al formulario de consultas. <em>Motivo:</em> Resolver dudas previas a la compra multiplica las conversiones.</li>
+        </ol>
+        <p><strong>Resultado esperado:</strong> Escaparate público comercialmente persuasivo, legalmente protegido y listo para captar correos y consultas por WhatsApp.</p>
+      </div>
+
+      <!-- FASE 3 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Fase 3 • Módulo 4: Área del Alumno</span>
+        <h3>Paso a Paso 3: Verificar la Experiencia de Estudio y el Foro estilo Skool</h3>
+        <p><strong>Objetivo:</strong> Asegurar que el estudiante disponga de un entorno de aprendizaje cómodo, interactivo y gamificado.</p>
+        <ol style="padding-left:20px; line-height:1.85; margin:12px 0;">
+          <li><strong>Acción 1:</strong> Inicia sesión como alumno de prueba en el área privada. <em>Motivo:</em> Comprobar de primera mano lo que verá tu cliente tras registrarse o pagar.</li>
+          <li><strong>Acción 2:</strong> Entra en <strong>«Mis Cursos»</strong> y verifica que a la izquierda aparezca el índice de lecciones con la duración exacta de cada clase (ej. 6 min, 8 min) y el botón de marcar lección como completada. <em>Motivo:</em> La barra de progreso motiva al alumno a avanzar.</li>
+          <li><strong>Acción 3:</strong> Abre una lección y comprueba la visualización del vídeo (YouTube oculto o Vimeo), el texto explicativo, la lista de tareas interactiva, los archivos descargables y el cuestionario (quiz). <em>Motivo:</em> Combina formatos para un aprendizaje práctico.</li>
+          <li><strong>Acción 4:</strong> Accede al <strong>Foro de Comunidad (estilo Skool)</strong>, crea una publicación de prueba en una categoría, dale «me gusta» y responde un hilo. <em>Motivo:</em> Verificar que el sistema de gamificación sume puntos automáticamente a los alumnos participativos.</li>
+          <li><strong>Acción 5:</strong> Entra en el apartado de <strong>Perfil y Facturación</strong> del estudiante. <em>Motivo:</em> Confirmar que el alumno puede editar sus datos y consultar su historial de pagos.</li>
+        </ol>
+        <p><strong>Resultado esperado:</strong> Campus virtual completo con reproductor multimedia, evaluación, descargas y comunidad gamificada activa.</p>
+      </div>
+
+      <!-- FASE 4 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Fase 4 • Módulo 5: Área del Profesor</span>
+        <h3>Paso a Paso 4: Administrar Cursos, Modos de Publicación (Drip) y Permisos de Alumnos</h3>
+        <p><strong>Objetivo:</strong> Dominar el panel de control docente para gestionar contenidos, estudiantes y moderación sin tocar código.</p>
+        <ol style="padding-left:20px; line-height:1.85; margin:12px 0;">
+          <li><strong>Acción 1:</strong> Entra al panel de Profesor y edita desde la configuración general los textos de la web y las métricas de autoridad. <em>Motivo:</em> Mantener actualizada tu página sin gastar créditos de IA en cambios de texto simples.</li>
+          <li><strong>Acción 2:</strong> Ve a <strong>«Cursos y lecciones»</strong>, crea un curso con título, descripción e imagen de portada, añade las lecciones y pega la URL del vídeo de YouTube (modo oculto) o Vimeo. <em>Motivo:</em> Alojar vídeos pesados externamente garantiza velocidad óptima de carga.</li>
+          <li><strong>Acción 3:</strong> Configura el estado de cada lección según tu estrategia: <strong>Borrador</strong> (solo visible para ti), <strong>Publicada</strong> (disponible para inscritos), <strong>Gratis / Preview</strong> (abierta como gancho comercial) o <strong>Publicación programada / Drip Content</strong> (se desbloquea X días después de la inscripción del alumno). <em>Motivo:</em> Controlar el ritmo pedagógico y evitar descargas masivas el primer día.</li>
+          <li><strong>Acción 4:</strong> Abre la pestaña de <strong>Usuarios / Alumnos</strong> para dar de alta o baja manualmente, asignar cursos o fijar una fecha límite de acceso (ej. conceder 2 días extra de prueba). <em>Motivo:</em> Flexibilidad total para atención al cliente y becas.</li>
+          <li><strong>Acción 5:</strong> En el panel del Foro y Equipo, fija publicaciones importantes arriba, modera mensajes y crea credenciales con contraseña independiente si colaboras con otros profesores. <em>Motivo:</em> Mantener el orden en la comunidad y delegar tareas de forma segura.</li>
+        </ol>
+        <p><strong>Resultado esperado:</strong> Control administrativo total sobre el catálogo formativo, el goteo de clases, los accesos temporales y el equipo docente.</p>
+      </div>
+
+      <!-- FASE 5 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Fase 5 • Módulo 6 y 7: Pagos con Stripe y Dominio Propio</span>
+        <h3>Paso a Paso 5: Monetizar en 5 Minutos y Publicar en tu Dominio Personalizado</h3>
+        <p><strong>Objetivo:</strong> Cobrar automáticamente en tu cuenta bancaria sin intermediarios y lanzar la academia en tu propio dominio `.com`.</p>
+        <ol style="padding-left:20px; line-height:1.85; margin:12px 0;">
+          <li><strong>Acción 1:</strong> Crea o abre tu cuenta gratuita en <strong>Stripe</strong> y copia tus claves de API desde el panel de desarrolladores de Stripe. <em>Motivo:</em> Son las llaves seguras que conectan tu academia con tu banco.</li>
+          <li><strong>Acción 2:</strong> Pega las claves API en la sección de configuración de pagos del panel de Coderick. <em>Motivo:</em> Activa la pasarela directa en menos de 5 minutos con 0% de comisión por parte de Coderick.</li>
+          <li><strong>Acción 3:</strong> Configura tus modalidades de precio: <strong>Pago único</strong> (acceso de por vida), <strong>Pago a plazos</strong> (fraccionado) o <strong>Membresía recurrente</strong> (cobro mensual o anual) y crea cupones de descuento promocionales (ej. 20% OFF). <em>Motivo:</em> Adaptar tu oferta a distintos bolsillos y campañas de lanzamiento.</li>
+          <li><strong>Acción 4:</strong> Revisa todo el flujo en la URL temporal de prueba (formato <code>preview-v2...</code>). <em>Motivo:</em> Validar vistas de alumno y profesor antes de abrir al público general.</li>
+          <li><strong>Acción 5:</strong> Pulsa en <strong>«Cambiar dominio»</strong> dentro de Coderick, introduce tu dominio propio (comprado en SiteGround o registrador externo por ~10-15 €/año) y apunta los registros DNS (A o CNAME) que te muestra la pantalla. <em>Motivo:</em> Tu academia queda publicada bajo tu marca comercial con mantenimiento cero.</li>
+        </ol>
+        <p><strong>Resultado esperado:</strong> Academia online operativa en tu dominio personalizado, procesando pagos reales en Stripe y matriculando alumnos automáticamente.</p>
+      </div>
+
+      <div class="tab-footer-nav">
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(1)">⬅ Anterior: 1. CONCEPTOS</button>
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(3)">Siguiente: 3. PRÁCTICA ➔</button>
+      </div>
+    </section>
+
+    <!-- ==================== PESTAÑA 3: PRÁCTICA ==================== -->
+    <section class="tab-section" id="sec-3" data-t="PRÁCTICA">
+      <h2>Módulo 9: Caso Práctico Integrador y Ejercicios Guiados</h2>
+
+      <div class="card">
+        <span class="pedagogy-pill pill-what">Caso Real Documentado</span>
+        <h3>9.1. Proyecto: «Lucía Marín — Academia de Fotografía Móvil Pro»</h3>
+        <p>Analicemos cómo se aplican todos los módulos del manual en el proyecto real de demostración:</p>
+        <ul style="padding-left:18px; line-height:1.8;">
+          <li><strong>Propuesta de valor y Oferta comercial:</strong> Curso práctico para aprender fotografía y edición con el teléfono móvil en 30 minutos por un <strong>pago único de 49 €</strong>, complementado con una <strong>membresía de acompañamiento a 19 €/mes</strong>.</li>
+          <li><strong>Frontend (Landing Page):</strong> Cabecera con vídeo de presentación, contadores de autoridad (alumnos formados y reseñas) y pestaña de casos de éxito reales.</li>
+          <li><strong>Captación (Lead Magnet):</strong> Sección <em>«Gratis»</em> donde el visitante descarga una guía PDF de iluminación móvil tras dejar su nombre y correo aceptando el RGPD.</li>
+          <li><strong>Estructura del Curso:</strong> 5 lecciones en vídeo de corta duración (5-8 min) alojadas en modo oculto, con lista de tareas prácticas y cuestionario de autoevaluación al final de cada tema.</li>
+          <li><strong>Comunidad estilo Skool:</strong> Foro temático gamificado donde los estudiantes suben las fotos tomadas con su móvil, reciben correcciones de Lucía y ganan puntos por comentar las fotos de otros compañeros.</li>
+          <li><strong>Monetización en Stripe:</strong> Claves API conectadas con un cupón de descuento del <strong>20%</strong> para los primeros inscritos.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Roadmap Cronometrado</span>
+        <h3>9.2. Hoja de Ruta de 0 a 100 en 10 Minutos (Lista de Comprobación Persistente)</h3>
+        <p>Marca cada casilla a medida que completes tu propio proyecto. Tu progreso queda guardado automáticamente en este dispositivo:</p>
+
+        <div id="practice-checklist">
+          <label class="checklist-item" data-check-id="chk-1">
+            <input type="checkbox">
+            <span><strong>Minuto 0 a 1 — Registro y Créditos:</strong> Crear cuenta en Coderick y verificar la recepción de los 50.000 créditos gratuitos iniciales.</span>
+          </label>
+          <label class="checklist-item" data-check-id="chk-2">
+            <input type="checkbox">
+            <span><strong>Minuto 1 a 3 — Prompt Maestro:</strong> Redactar e introducir el prompt inicial completo (hasta 10.000 caracteres) definiendo temática, Landing, Lead Magnet, área de alumno con foro y área de profesor.</span>
+          </label>
+          <label class="checklist-item" data-check-id="chk-3">
+            <input type="checkbox">
+            <span><strong>Minuto 3 a 6 — Personalización por Voz/Texto:</strong> Revisar el entorno <code>preview-v2...</code>, ajustar paleta de colores, cambiar «Testimonios» por «Casos de Éxito» y verificar textos legales RGPD.</span>
+          </label>
+          <label class="checklist-item" data-check-id="chk-4">
+            <input type="checkbox">
+            <span><strong>Minuto 6 a 8 — Vídeos y Stripe:</strong> Añadir enlaces de YouTube (modo oculto) o Vimeo en las lecciones, configurar modo goteo (Drip) y pegar las claves API de Stripe con planes de pago y cupón del 20%.</span>
+          </label>
+          <label class="checklist-item" data-check-id="chk-5">
+            <input type="checkbox">
+            <span><strong>Minuto 8 a 10 — Dominio y Lanzamiento:</strong> Conectar dominio propio (10-15 €/año) apuntando los registros DNS A/CNAME y realizar una compra/registro de prueba final.</span>
+          </label>
+        </div>
+
+        <button type="button" class="btn-tool" id="btn-reset-checklist" style="margin-top:10px;">🔄 Reiniciar progreso de lista</button>
+      </div>
+
+      <div class="card">
+        <span class="pedagogy-pill pill-why">Práctica de Autoevaluación</span>
+        <h3>Ejercicios Prácticos con Solución Explicada</h3>
+
+        <details class="qa-card">
+          <summary>Ejercicio 1: Comparativa de Enfoques (Correcto vs. Incorrecto al subir vídeos)</summary>
+          <div class="qa-body">
+            <p><strong>Situación:</strong> Tienes 10 vídeos en alta definición (1,5 GB en total) para tu curso y quieres que carguen rápido sin agotar recursos.</p>
+            <p><span class="badge-err">❌ Enfoque Incorrecto:</span> Intentar subir archivos de vídeo pesados directamente como adjuntos brutos dentro del constructor web, ralentizando la carga de la página.</p>
+            <p><span class="badge-ok">✅ Enfoque Correcto (Solución explicada):</span> Subir los vídeos a <strong>YouTube en modo Oculto (Unlisted)</strong> o a <strong>Vimeo</strong> y pegar únicamente la URL en el campo de vídeo de cada lección dentro del Área del Profesor de Coderick. Así obtienes reproducción fluida y sin consumo de almacenamiento.</p>
+          </div>
+        </details>
+
+        <details class="qa-card">
+          <summary>Ejercicio 2: Retención de Alumnos en Membresías Mensuales</summary>
+          <div class="qa-body">
+            <p><strong>Situación:</strong> Quieres vender una membresía a 19 €/mes pero temes que un usuario se inscriba, descargue todo el contenido el primer día y se dé de baja al día siguiente.</p>
+            <p><span class="badge-ok">✅ Solución Combinada en Coderick:</span> 1) Configura las lecciones avanzadas en modo <strong>Publicación programada (Drip Content)</strong> para que se desbloqueen a los 7, 14 y 30 días del registro. 2) Activa el <strong>Foro con gamificación y puntos</strong> para que el alumno reciba valor continuo de la comunidad y del feedback directo del profesor.</p>
+          </div>
+        </details>
+
+        <details class="qa-card">
+          <summary>Ejercicio 3: Otorgar una extensión de prueba de 48 horas a un estudiante indeciso</summary>
+          <div class="qa-body">
+            <p><strong>Situación:</strong> Un potencial alumno te escribe por el botón de WhatsApp pidiendo ver el curso por dentro durante 2 días antes de pagar.</p>
+            <p><span class="badge-ok">✅ Solución Paso a Paso:</span> Entra al <strong>Área del Profesor → Pestaña Usuarios/Alumnos</strong>, da de alta manualmente al estudiante, asígnale permiso al curso y establece en el calendario de permisos una <strong>fecha límite de acceso de 2 días</strong>. Pasadas las 48 horas, el sistema requerirá la compra para continuar.</p>
+          </div>
+        </details>
+      </div>
+
+      <div class="tab-footer-nav">
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(2)">⬅ Anterior: 2. PROCEDIMIENTO</button>
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(4)">Siguiente: 4. PROMPTS ➔</button>
+      </div>
+    </section>
+
+    <!-- ==================== PESTAÑA 4: PROMPTS ==================== -->
+    <section class="tab-section" id="sec-4" data-t="PROMPTS">
+      <h2>Biblioteca Completa de Prompts Reutilizables (Texto y Voz)</h2>
+      <p>En esta pestaña tienes recopilados <strong>todos los prompts del tutorial</strong> listos para copiar con un solo toque, junto con la explicación exacta de <strong>dónde y cuándo se emplea cada uno</strong> dentro de Coderick.</p>
+
+      <!-- PROMPT 1 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Prompt #1 • Creación Inicial (Hasta 10.000 caracteres)</span>
+        <h3>1. Prompt Maestro para Generar la Academia Completa desde Cero</h3>
+        <p><strong>¿Dónde se emplea?:</strong> Se introduce en la caja principal de inicio de Coderick al crear un proyecto nuevo (o se prepara previamente con ayuda de ChatGPT/Gemini). Define el Frontend, el Área del Alumno y el Área del Profesor de una sola vez.</p>
+        <div class="copy-block">
+          <div class="copy-header">
+            <span>PROMPT MAESTRO DE ARQUITECTURA DE ACADEMIA</span>
+            <button type="button" class="btn-copy" data-copy-target="prm-1">📋 COPIAR</button>
+          </div>
+          <pre class="copy-content" id="prm-1">Crea una academia online completa llamada "Academia de Fotografía Móvil Pro - Lucía Marín" para vender un curso de fotografía y edición con el móvil en 30 minutos a 49 € (pago único) y una membresía de acompañamiento a 19 €/mes.
+
+1. FRONTEND PÚBLICO (LANDING PAGE Y CAPTACIÓN):
+- Hero principal con titular atractivo, vídeo de presentación y botones "Ver curso" y "Empezar gratis".
+- Zona de Lead Magnet / Pestaña "Gratis" con formulario (nombre, email y casilla de aceptación RGPD con textos legales y política de privacidad) para descargar una guía PDF gratuita.
+- Bloque de estadísticas de autoridad (alumnos formados, valoraciones, suscriptores), carrusel dinámico de logotipos colaboradores y sección de "Casos de Éxito" con historias de estudiantes.
+- Página de contacto con formulario y botón directo a WhatsApp.
+
+2. ÁREA PRIVADA DEL ALUMNO:
+- Sistema de registro y login seguro.
+- Sección "Mis Cursos" con columna izquierda de índice de lecciones (indicando duración de 5 a 8 min por clase), barra de progreso, botón de lección completada, reproductor de vídeo (YouTube oculto / Vimeo), texto, lista de tareas interactiva, descargas y cuestionario quiz.
+- Foro de comunidad estilo Skool con categorías temáticas, "me gusta", respuestas y sistema de gamificación por puntos según participación.
+- Panel de perfil del alumno e historial de facturación y pagos.
+
+3. ÁREA PRIVADA DEL PROFESOR (ADMINISTRACIÓN):
+- Edición general de textos y cifras de autoridad de la web.
+- Gestión de cursos y lecciones con soporte para estados: Borrador, Publicada, Gratis (Preview) y Publicación programada por días (Drip Content).
+- Administración de alumnos (altas, bajas, permisos por curso y fecha límite de acceso temporal).
+- Moderación del foro (fijar posts arriba, cerrar hilos, ocultar mensajes) y gestión de múltiples profesores con contraseñas independientes.
+- Integración de pagos con claves API de Stripe (pago único, pago a plazos y membresía recurrente), creación de cupones de descuento e historial de ventas.</pre>
+        </div>
+      </div>
+
+      <!-- PROMPT 2 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Prompt #2 • Comando por Voz o Chat de Edición</span>
+        <h3>2. Prompt de Renombrado de Pestaña en Navegación</h3>
+        <p><strong>¿Dónde se emplea?:</strong> En el panel lateral izquierdo del constructor de Coderick (pulsando el icono del micrófono para dictarlo por voz o escribiéndolo en el chat) durante la fase de personalización de la Landing Page (Módulo 2.2).</p>
+        <div class="copy-block">
+          <div class="copy-header">
+            <span>COMANDO DE VOZ / TEXTO: RENOMBRAR PESTAÑA</span>
+            <button type="button" class="btn-copy" data-copy-target="prm-2">📋 COPIAR</button>
+          </div>
+          <pre class="copy-content" id="prm-2">Cambia el nombre de la pestaña Testimonios por Casos de Éxito</pre>
+        </div>
+      </div>
+
+      <!-- PROMPT 3 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-warn">Prompt #3 • Corrección de Dependencias y Enlaces</span>
+        <h3>3. Prompt de Sincronización Global de URLs, Menú y Pie de Página</h3>
+        <p><strong>¿Dónde se emplea?:</strong> En el chat lateral de Coderick (Módulo 8.1: Solución de Problemas) cuando tras cambiar el nombre de una sección observas que algún enlace secundario o el pie de página conserva el nombre antiguo.</p>
+        <div class="copy-block">
+          <div class="copy-header">
+            <span>PROMPT DE CORRECCIÓN DE DEPENDENCIAS INTERNAS</span>
+            <button type="button" class="btn-copy" data-copy-target="prm-3">📋 COPIAR</button>
+          </div>
+          <pre class="copy-content" id="prm-3">Actualiza también las URLs, el menú principal y el pie de página con el nuevo término</pre>
+        </div>
+      </div>
+
+      <!-- PROMPT 4 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Prompt #4 • Personalización Estética</span>
+        <h3>4. Prompt de Adaptación Visual (Colores, Temas y Tipografías)</h3>
+        <p><strong>¿Dónde se emplea?:</strong> En el panel de construcción de Coderick (Módulo 2.3) para adaptar la paleta cromática (clara u oscura, tonos verdes, azules o amarillos) y subir imágenes propias al chat.</p>
+        <div class="copy-block">
+          <div class="copy-header">
+            <span>PROMPT DE PERSONALIZACIÓN VISUAL Y ESTILO</span>
+            <button type="button" class="btn-copy" data-copy-target="prm-4">📋 COPIAR</button>
+          </div>
+          <pre class="copy-content" id="prm-4">Cambia el diseño visual de la academia a un tema moderno con paleta de colores azul marino y acentos esmeralda, tipografía limpia de alta legibilidad en móvil y actualiza las imágenes de portada con las fotografías adjuntas en el chat.</pre>
+        </div>
+      </div>
+
+      <!-- PROMPT 5 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Prompt #5 • Programación Pedagógica (Drip Content)</span>
+        <h3>5. Prompt para Configurar Contenido en Goteo y Estados de Lección</h3>
+        <p><strong>¿Dónde se emplea?:</strong> En el chat del constructor de Coderick al configurar la lógica del Área del Profesor y del Alumno (Módulo 5.3 y Pregunta #16) para evitar que los usuarios descarguen todo el curso de golpe.</p>
+        <div class="copy-block">
+          <div class="copy-header">
+            <span>PROMPT DE LIBERACIÓN PROGRESIVA (DRIP CONTENT)</span>
+            <button type="button" class="btn-copy" data-copy-target="prm-5">📋 COPIAR</button>
+          </div>
+          <pre class="copy-content" id="prm-5">Programa la apertura progresiva de las lecciones del curso (Drip Content) para que la Lección 1 sea Gratis (Preview), la Lección 2 esté Publicada desde el día 1, y las siguientes lecciones se desbloqueen automáticamente a los 3, 7 y 14 días después de la fecha de registro del alumno.</pre>
+        </div>
+      </div>
+
+      <!-- PROMPT 6 -->
+      <div class="card">
+        <span class="pedagogy-pill pill-how">Prompt #6 • Monetización y Cupones</span>
+        <h3>6. Prompt para Estructurar Planes de Pago con Stripe y Cupones</h3>
+        <p><strong>¿Dónde se emplea?:</strong> En el chat de Coderick al preparar la sección comercial y de facturación (Módulo 6.2 y 6.3) para habilitar cobros únicos, fraccionados, suscripciones y códigos de descuento.</p>
+        <div class="copy-block">
+          <div class="copy-header">
+            <span>PROMPT DE PLANES DE PAGO STRIPE Y CUPONES</span>
+            <button type="button" class="btn-copy" data-copy-target="prm-6">📋 COPIAR</button>
+          </div>
+          <pre class="copy-content" id="prm-6">Habilita en el panel de pagos la conexión directa mediante claves API de Stripe con tres modalidades: Pago único de 49 € con acceso de por vida, Pago a plazos fraccionado y Membresía recurrente mensual de 19 €/mes. Añade un generador de cupones promocionales con un código del 20% de descuento de lanzamiento y una pestaña de historial de Ventas.</pre>
+        </div>
+      </div>
+
+      <div class="tab-footer-nav">
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(3)">⬅ Anterior: 3. PRÁCTICA</button>
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(5)">Siguiente: 5. 33 Preguntas (Q&amp;A) ➔</button>
+      </div>
+    </section>
+
+    <!-- ==================== PESTAÑA 5: 33 PREGUNTAS (Q&A) ==================== -->
+    <section class="tab-section" id="sec-5" data-t="33 Preguntas (Q&A)">
+      <h2>Las 33 Preguntas y Respuestas Oficiales (Ordenadas por Nivel de Dificultad)</h2>
+      <p>Explora las <strong>33 preguntas y respuestas íntegras</strong> organizadas en <strong>Nivel 1 (Básico)</strong>, <strong>Nivel 2 (Avanzado)</strong> y <strong>Nivel 3 (Pro)</strong>. Puedes desplegarlas individualmente o usar los botones siguientes para abrirlas todas de una vez.</p>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:16px;">
+        <button type="button" class="btn-tool" id="btn-expand-all-qa">➕ Desplegar las 33 Respuestas</button>
+        <button type="button" class="btn-tool" id="btn-collapse-all-qa">➖ Contraer todas</button>
+      </div>
+
+      <!-- NIVEL 1: BÁSICO (1 a 11) -->
+      <div class="card">
+        <span class="pedagogy-pill pill-lvl1">Nivel 1 • Básico (Preguntas 1 a 11)</span>
+        <h3>Fundamentos para Principiantes Absolutos</h3>
+
+        <details class="qa-card" open>
+          <summary>1. ¿Es realmente gratis crear una academia con Coderick?</summary>
+          <div class="qa-body"><p>Sí, al registrarse se otorgan <strong>50.000 créditos gratuitos</strong>, suficientes para construir y publicar una academia completa que consume unos 8.000 créditos.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>2. ¿Necesito saber programar o diseñar páginas web?</summary>
+          <div class="qa-body"><p>No, Coderick genera y modifica todo mediante instrucciones habladas o escritas en español.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>3. ¿Tengo que pagar hosting mensual?</summary>
+          <div class="qa-body"><p>No, la plataforma incluye la infraestructura sin necesidad de contratar alojamientos adicionales.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>4. ¿Necesito instalar WordPress o plugins?</summary>
+          <div class="qa-body"><p>No, Coderick reemplaza WordPress y no requiere instalar ni actualizar ningún plugin.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>5. ¿Qué datos necesito para empezar?</summary>
+          <div class="qa-body"><p>Solo una cuenta de correo para registrarte en Coderick y una idea clara o prompt con el contenido de tu academia.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>6. ¿Puedo usar mi propio dominio?</summary>
+          <div class="qa-body"><p>Sí, puedes conectar cualquier dominio personalizado que compres o que ya poseas por unos 10-15 € al año.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>7. ¿Dónde se alojan los vídeos de mis clases?</summary>
+          <div class="qa-body"><p>Puedes usar enlaces en modo oculto de YouTube o Vimeo sin consumir espacio de almacenamiento.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>8. ¿Qué comisión se cobra por cada venta de un curso?</summary>
+          <div class="qa-body"><p>Coderick no cobra comisiones por venta. Las ganancias van directas a tu cuenta mediante Stripe.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>9. ¿Puedo cambiar los colores y fotos de la plantilla generada?</summary>
+          <div class="qa-body"><p>Sí, puedes pedir a la IA que cambie colores, tipografías o imágenes mediante prompts de texto o voz.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>10. ¿Es posible ofrecer un curso o lección gratis para captar clientes?</summary>
+          <div class="qa-body"><p>Sí, se puede configurar una sección de recursos gratuitos o marcar lecciones específicas como gratuitas.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>11. ¿Cómo entran los alumnos a sus cursos?</summary>
+          <div class="qa-body"><p>Mediante un área privada de usuario donde inician sesión con su correo y contraseña.</p></div>
+        </details>
+      </div>
+
+      <!-- NIVEL 2: AVANZADO (12 a 22) -->
+      <div class="card">
+        <span class="pedagogy-pill pill-lvl2">Nivel 2 • Avanzado (Preguntas 12 a 22)</span>
+        <h3>Gestión de Comunidad, Pagos Recurrentes y Administración</h3>
+
+        <details class="qa-card">
+          <summary>12. ¿Qué ocurre si la IA realiza un cambio que no me gusta?</summary>
+          <div class="qa-body"><p>Puedes restaurar inmediatamente cualquier versión previa usando la herramienta de historial/rollback integrada.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>13. ¿Cómo funciona el foro comunitario para los estudiantes?</summary>
+          <div class="qa-body"><p>Es una zona privada integrada donde los alumnos crean publicaciones, seleccionan categorías, dan «me gusta» y responden comentarios.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>14. ¿Qué es la gamificación en el foro y para qué sirve?</summary>
+          <div class="qa-body"><p>Es un sistema que otorga puntos a los alumnos por participar, aumentando la retención y comunidad en la academia.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>15. ¿Puedo ofrecer cursos con cobros recurrentes (membresías)?</summary>
+          <div class="qa-body"><p>Sí, al configurar Stripe puedes definir cobros de pago único, pagos a plazos o suscripciones mensuales/anuales.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>16. ¿Cómo se programa la liberación progresiva de lecciones (Drip Content)?</summary>
+          <div class="qa-body"><p>Se puede indicar a la IA que programe la apertura de lecciones para que se liberen X días después del registro del alumno.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>17. ¿Puedo conceder o quitar acceso manualmente a un estudiante?</summary>
+          <div class="qa-body"><p>Sí, el profesor puede otorgar o revocar permisos de curso a cualquier alumno desde el panel de administración.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>18. ¿Cómo se gestiona el cumplimiento del RGPD?</summary>
+          <div class="qa-body"><p>Coderick incorpora automáticamente los textos y casillas de aceptación de políticas de privacidad en todos los formularios.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>19. ¿Se pueden añadir más profesores o administradores a la academia?</summary>
+          <div class="qa-body"><p>Sí, se pueden crear perfiles de profesor con contraseñas independientes para gestionar cursos y alumnos.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>20. ¿Puedo crear cupones de descuento para campañas promocionales?</summary>
+          <div class="qa-body"><p>Sí, la sección de planes de pago permite generar códigos promocionales con descuentos específicos.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>21. ¿Qué tipos de contenidos se pueden incluir en una lección?</summary>
+          <div class="qa-body"><p>Vídeos, textos, imágenes, listas de tareas interactivas, cuestionarios de evaluación y archivos descargables.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>22. ¿Puedo editar la web mediante comandos de voz en lugar de escribir?</summary>
+          <div class="qa-body"><p>Sí, el cuadro de chat de Coderick incluye un botón de micrófono para dictar las instrucciones.</p></div>
+        </details>
+      </div>
+
+      <!-- NIVEL 3: PRO (23 a 33) -->
+      <div class="card">
+        <span class="pedagogy-pill pill-lvl3">Nivel 3 • Pro (Preguntas 23 a 33)</span>
+        <h3>Arquitectura Técnica, APIs, DNS y Escalabilidad</h3>
+
+        <details class="qa-card">
+          <summary>23. ¿Cómo se integran las claves API de Stripe en Coderick?</summary>
+          <div class="qa-body"><p>Se obtienen las claves desde el panel de control de Stripe y se pegan en la casilla de configuración de pagos de Coderick en menos de 5 minutos.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>24. ¿Qué ventaja técnica ofrece la arquitectura de Coderick frente a un LMS tradicional?</summary>
+          <div class="qa-body"><p>Al no depender de base de datos MySQL local ni servidor PHP expuesto, elimina vulnerabilidades de seguridad y caídas por saturación o incompatibilidad de software.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>25. ¿Puedo exportar e importar la estructura de mi academia?</summary>
+          <div class="qa-body"><p>Sí, la estructura creada se puede exportar o clonar para replicar la academia en otras cuentas o entornos.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>26. ¿Cómo detecta la IA las dependencias internas al cambiar el nombre de una pestaña?</summary>
+          <div class="qa-body"><p>Al solicitar un cambio (ej. de «Testimonios» a «Casos de Éxito»), Coderick modifica automáticamente el menú de navegación, las migas de pan, los enlaces internos y los títulos de la página.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>27. ¿Qué ocurre si agoto los 50.000 créditos gratuitos iniciales?</summary>
+          <div class="qa-body"><p>Se pueden adquirir paquetes adicionales de créditos desde 10 € para continuar añadiendo funciones complejas.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>28. ¿Cómo se realiza el seguimiento de las ventas y la facturación de los alumnos?</summary>
+          <div class="qa-body"><p>El profesor dispone de un panel de «Ventas» con registros de transacciones, mientras que los alumnos pueden descargar sus comprobantes desde su panel de facturación.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>29. ¿Se pueden fijar o moderar hilos específicos en el foro?</summary>
+          <div class="qa-body"><p>Sí, el docente puede fijar publicaciones destacadas en la parte superior, cerrar comentarios u ocultar mensajes inapropiados.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>30. ¿Cómo se realiza la migración de un dominio que ya está en uso en otro proveedor?</summary>
+          <div class="qa-body"><p>Basta con acceder al panel del registrador del dominio y modificar los registros DNS (A o CNAME) para apuntar a la dirección facilitada por Coderick.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>31. ¿Qué limitación existe para las solicitudes de prompts en Coderick?</summary>
+          <div class="qa-body"><p>El límite por solicitud es de <strong>10.000 caracteres</strong>, lo que permite detallar infraestructuras completas en una sola orden.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>32. ¿Es posible limitar la duración del acceso de un alumno a un curso?</summary>
+          <div class="qa-body"><p>Sí, se puede configurar una fecha límite de acceso tras la cual el estudiante deberá renovar su suscripción o compra.</p></div>
+        </details>
+
+        <details class="qa-card">
+          <summary>33. ¿Por qué Coderick es superior a alternativas cerradas tipo Teachable o Kajabi para creadores independientes?</summary>
+          <div class="qa-body"><p>Porque permite personalización total sin restricciones de plantillas, no cobra mensualidades elevadas ni comisiones por alumno y mantiene la propiedad del proyecto en tu dominio.</p></div>
+        </details>
+      </div>
+
+      <div class="tab-footer-nav">
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(4)">⬅ Anterior: 4. PROMPTS</button>
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(6)">Siguiente: 6. ERRORES ➔</button>
+      </div>
+    </section>
+
+    <!-- ==================== PESTAÑA 6: ERRORES ==================== -->
+    <section class="tab-section" id="sec-6" data-t="ERRORES">
+      <h2>Módulo 8: Solución de Problemas, Errores Comunes y Limitaciones</h2>
+
+      <div class="card">
+        <span class="pedagogy-pill pill-warn">Diagnóstico Rápido</span>
+        <h3>8.1. Errores en la Generación con IA y Cómo Corregirlos</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Síntoma / Problema Detectado</th>
+                <th>Causa Raíz</th>
+                <th>Solución Verificada Paso a Paso</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Al renombrar una pestaña, el pie de página o una URL interna conserva el nombre viejo.</strong></td>
+                <td>Instrucción demasiado breve que no especificó alcance global.</td>
+                <td>Envía el prompt correctivo: <em>«Actualiza también las URLs, el menú principal y el pie de página con el nuevo término»</em>.</td>
+              </tr>
+              <tr>
+                <td><strong>Un cambio visual desordena el diseño que ya tenías aprobado.</strong></td>
+                <td>Prompt ambiguo o contradictorio con la estructura previa.</td>
+                <td>No gastes créditos intentando explicarle qué rompió: pulsa el botón de <strong>Restaurar versión (Rollback)</strong> en el panel izquierdo y escribe un prompt más conciso.</td>
+              </tr>
+              <tr>
+                <td><strong>Los vídeos de las clases tardan en cargar o pesan demasiado.</strong></td>
+                <td>Intento de subir archivos de vídeo masivos directamente al proyecto.</td>
+                <td>Sube los vídeos a <strong>YouTube (modo oculto/unlisted)</strong> o <strong>Vimeo</strong> y pega únicamente la URL en el editor de lecciones del profesor.</td>
+              </tr>
+              <tr>
+                <td><strong>Se agotan los 50.000 créditos gratuitos antes de terminar.</strong></td>
+                <td>Demasiadas micro-iteraciones por no haber planificado el Prompt Inicial.</td>
+                <td>Supervisa el contador en el panel lateral. Planifica tus bloques en ChatGPT/Gemini aprovechando los 10.000 caracteres iniciales. Si necesitas más, amplía con un paquete desde 10 €.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <span class="pedagogy-pill pill-what">Control de Consumo</span>
+          <h3>8.2. Gestión Inteligente de Créditos</h3>
+          <p>Recuerda que una academia completa estándar consume apenas <strong>8.000 créditos</strong> de los 50.000 gratuitos. Para no desperdiciar los 42.000 créditos restantes:</p>
+          <ul style="padding-left:18px; line-height:1.75;">
+            <li>Usa el <strong>Área del Profesor</strong> para editar títulos de cursos, precios, textos y altas de alumnos (eso no consume créditos de generación IA).</li>
+            <li>Reserva el chat de IA para cambios estructurales o estéticos de la aplicación.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <span class="pedagogy-pill pill-warn">Límites de Plataforma</span>
+          <h3>8.3. Limitaciones Conocidas y Buenas Prácticas</h3>
+          <ul style="padding-left:18px; line-height:1.75;">
+            <li><strong>Tope por prompt:</strong> 10.000 caracteres máximo por mensaje enviado.</li>
+            <li><strong>Alojamiento de vídeo:</strong> Siempre externo mediante URL (YouTube Oculto / Vimeo) para máximo rendimiento.</li>
+            <li><strong>Dominio web:</strong> La URL `preview-v2...` es para pruebas; para proyectar autoridad comercial se requiere adquirir y apuntar un dominio propio (~10-15 €/año).</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tab-footer-nav">
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(5)">⬅ Anterior: 5. 33 Preguntas (Q&amp;A)</button>
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(7)">Siguiente: 7. RESUMEN ➔</button>
+      </div>
+    </section>
+
+    <!-- ==================== PESTAÑA 7: RESUMEN ==================== -->
+    <section class="tab-section" id="sec-7" data-t="RESUMEN">
+      <h2>Resumen Ejecutivo por Capítulos y Hoja de Referencia Rápida</h2>
+
+      <div class="card">
+        <span class="pedagogy-pill pill-what">Síntesis Global</span>
+        <h3>Lo que has aprendido en este Manual Maestro</h3>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Módulo</th>
+                <th>Concepto Clave</th>
+                <th>Acción Principal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Módulo 0</strong></td>
+                <td>Coderick de SiteGround reemplaza WordPress y elimina comisiones de Hotmart/Udemy.</td>
+                <td>Aprovechar los 50.000 créditos gratis (la academia consume ~8.000).</td>
+              </tr>
+              <tr>
+                <td><strong>Módulo 1</strong></td>
+                <td>Planificación instruccional e insumos previos.</td>
+                <td>Preparar vídeos de 5-8 min en YouTube oculto/Vimeo y prompt de hasta 10.000 caracteres.</td>
+              </tr>
+              <tr>
+                <td><strong>Módulo 2</strong></td>
+                <td>Construcción asistida por IA (texto y voz) + Rollback.</td>
+                <td>Generar la base y usar el botón de restauración si un cambio no convence.</td>
+              </tr>
+              <tr>
+                <td><strong>Módulo 3</strong></td>
+                <td>Frontend de alta conversión y legalidad europea.</td>
+                <td>Incluir Lead Magnet gratis, Casos de Éxito, textos RGPD y botón de WhatsApp.</td>
+              </tr>
+              <tr>
+                <td><strong>Módulo 4</strong></td>
+                <td>Experiencia del Estudiante y retención comunitaria.</td>
+                <td>Activar foro estilo Skool con gamificación por puntos, quizzes y descargas.</td>
+              </tr>
+              <tr>
+                <td><strong>Módulo 5</strong></td>
+                <td>Panel Docente sin código.</td>
+                <td>Gestionar cursos en Borrador, Publicada, Gratis o Goteo (Drip) y accesos por fecha.</td>
+              </tr>
+              <tr>
+                <td><strong>Módulo 6</strong></td>
+                <td>Monetización directa en 5 minutos.</td>
+                <td>Vincular claves API de Stripe para pago único, plazos o membresías y crear cupones.</td>
+              </tr>
+              <tr>
+                <td><strong>Módulo 7</strong></td>
+                <td>Despliegue en producción con mantenimiento cero.</td>
+                <td>Probar en <code>preview-v2...</code> y apuntar registros DNS A/CNAME de tu dominio propio.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Fórmula Matemática del Coste de Lanzamiento</h3>
+        <p>El modelo económico documentado para lanzar tu primera versión profesional se resume en:</p>
+        <p style="font-family:monospace; font-size:1rem; background:var(--bg-elevated); padding:12px; border-radius:8px; border:1px solid var(--cyan);">
+          Coste Software (0 € con 50.000 créditos) + Hosting (0 € incluido) + Comisión Coderick (0 %) + Dominio Anual (~10 € a 15 €/año) = Lanzamiento 100% en Propiedad.
+        </p>
+      </div>
+
+      <div class="tab-footer-nav">
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(6)">⬅ Anterior: 6. ERRORES</button>
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(8)">Siguiente: 8. FUENTES ➔</button>
+      </div>
+    </section>
+
+    <!-- ==================== PESTAÑA 8: FUENTES ==================== -->
+    <section class="tab-section" id="sec-8" data-t="FUENTES">
+      <h2>Módulo 12: Fuentes Fiables y Documentación Oficial</h2>
+      <p>Toda la información técnica, métricas de créditos, flujos de configuración y casos prácticos de este tutorial provienen estrictamente de las fuentes documentales adjuntas. Puedes copiar las referencias y enlaces directamente con los botones siguientes:</p>
+
+      <div class="card">
+        <h3>1. Canal Oficial y Vídeo de Referencia Principal</h3>
+        <p><strong>Autor de la fuente audiovisual:</strong> Gonzalo de la Campa / Escuela.com — <em>«¡Esto antes ERA IMPOSIBLE! 🎓 Crea tu Academia Online GRATIS con Coderick»</em>.</p>
+        <div class="copy-block">
+          <div class="copy-header">
+            <span>REFERENCIA DOCUMENTAL Y RECURSOS ESCUELA.COM</span>
+            <button type="button" class="btn-copy" data-copy-target="src-1">📋 COPIAR</button>
+          </div>
+          <pre class="copy-content" id="src-1">https://escuela.com/gratis</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>2. Plataforma Oficial de Construcción con IA</h3>
+        <p><strong>Coderick (by SiteGround):</strong> Sitio oficial y documentación del constructor de aplicaciones y academias mediante Inteligencia Artificial.</p>
+        <div class="copy-block">
+          <div class="copy-header">
+            <span>SITIO OFICIAL CODERICK AI APP BUILDER</span>
+            <button type="button" class="btn-copy" data-copy-target="src-2">📋 COPIAR</button>
+          </div>
+          <pre class="copy-content" id="src-2">https://coderick.ai</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>3. Pasarela de Pagos Sin Intermediarios</h3>
+        <p><strong>Stripe:</strong> Documentación oficial para obtener las claves API y configurar cobros de pago único, fraccionados y suscripciones recurrentes.</p>
+        <div class="copy-block">
+          <div class="copy-header">
+            <span>SITIO OFICIAL PASARELA DE PAGOS STRIPE</span>
+            <button type="button" class="btn-copy" data-copy-target="src-3">📋 COPIAR</button>
+          </div>
+          <pre class="copy-content" id="src-3">https://stripe.com/docs</pre>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>4. Construye cualquier cosa con Coderick AI</h3>
+        <p><strong>Acceso directo oficial de SiteGround para Coderick AI:</strong> Enlace directo para registrarte y comenzar a crear tu academia o aplicación con tus créditos iniciales.</p>
+        <div class="copy-block">
+          <div class="copy-header">
+            <span>CONSTRUYE CUALQUIER COSA CON CODERICK AI</span>
+            <button type="button" class="btn-copy" data-copy-target="src-4">📋 COPIAR</button>
+          </div>
+          <pre class="copy-content" id="src-4">https://www.siteground.es/coderick-ai?mktafcode=46c32c7b3008cd4166f4b80220fe03b8?utm_source=youtube&amp;utm_medium=social&amp;utm_content=Academia_Coderick_Gonzalo_Campa</pre>
+        </div>
+        <p style="margin-top:10px; margin-bottom:0;">
+          <a href="https://www.siteground.es/coderick-ai?mktafcode=46c32c7b3008cd4166f4b80220fe03b8?utm_source=youtube&amp;utm_medium=social&amp;utm_content=Academia_Coderick_Gonzalo_Campa" target="_blank" rel="noopener noreferrer" class="chip" style="border-color:var(--cyan); color:var(--cyan);">🔗 Abrir enlace en nueva pestaña</a>
+        </p>
+      </div>
+
+      <div class="tab-footer-nav">
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(7)">⬅ Anterior: 7. RESUMEN</button>
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(9)">Siguiente: 9. CRÉDITOS ➔</button>
+      </div>
+    </section>
+
+    <!-- ==================== PESTAÑA 9: CRÉDITOS ==================== -->
+    <section class="tab-section" id="sec-9" data-t="CRÉDITOS">
+      <!-- Orden obligatorio estricto:
+           1. Título de la sección.
+           2. SVG animado compartido con INICIO.
+           3. Breve descripción de la ilustración.
+           4. Nombre del autor (elemento visual más destacado).
+           5. Texto «Autor del tutorial».
+           6. Información adicional pertinente (incluyendo fecha y hora fijas).
+           7. Número de versión. -->
+
+      <h2>CRÉDITOS DEL TUTORIAL</h2>
+
+      <div class="svg-hero-box" id="svg-mount-credits" role="img" aria-label="Ilustración animada compartida del ecosistema Coderick IA creando una academia online con cursos en vídeo, foro comunitario Skool, Stripe y dominio personalizado"></div>
+
+      <div class="card" style="text-align:center;">
+        <p style="font-size:0.92rem; color:var(--text-muted); max-width:680px; margin:0 auto 14px;">
+          <strong>Descripción de la ilustración:</strong> Escena vectorial animada multicapa que representa el núcleo de Inteligencia Artificial de Coderick (con birrete académico y contador de 50.000 créditos gratuitos) conectado mediante flujos neuronales en tiempo real a los cuatro pilares de la escuela online: reproductor de cursos en vídeo, pasarela directa Stripe con 0% de comisiones, foro comunitario gamificado estilo Skool y dominio propio sin WordPress, gobernado desde una terminal de prompts de texto y voz.
+        </p>
+
+        <div class="author-highlight">Rubén Sbarsky</div>
+        <p style="font-size:1.2rem; font-weight:700; color:var(--cyan); margin-bottom:16px;">Autor del tutorial</p>
+
+        <div style="background:var(--bg-elevated); border:1px solid var(--border); border-radius:10px; padding:14px; max-width:560px; margin:0 auto 14px; text-align:left; font-size:0.9rem;">
+          <p style="margin-bottom:6px;"><strong>Basado en el material documental de:</strong> Gonzalo de la Campa / Escuela.com (<em>¡Esto antes ERA IMPOSIBLE! 🎓 Crea tu Academia Online GRATIS con Coderick</em>).</p>
+          <p style="margin-bottom:6px;"><strong>Estándares aplicados:</strong> Metodología GAUNTLET V3, arquitectura Clean Code (Uncle Bob) y optimización responsive Mobile-First para Samsung Galaxy A02s (360px).</p>
+          <p style="margin-bottom:0;"><strong>Fecha y hora de creación (fija):</strong> <code>05/11/2026 — 05:50:44</code></p>
+        </div>
+
+        <div style="display:inline-block; padding:8px 20px; border-radius:999px; background:var(--blue-accent); border:2px solid var(--cyan); font-weight:800; font-size:1rem; color:#ffffff;">
+          Versión del entregable: V002 (tutorial_academia_coderick_V002.html)
+        </div>
+      </div>
+
+      <div class="tab-footer-nav">
+        <button type="button" class="btn-step-nav" onclick="window.tutorialApp.goToSection(8)">⬅ Anterior: 8. FUENTES</button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- BOTONES FLOTANTES MOVIBLES (ARRASTRABLES EN MÓVIL Y ESCRITORIO) -->
+  <button type="button" class="draggable-fab" id="fab-home" title="Arrástrame para moverme o púlsame para ir a INICIO" aria-label="Botón flotante movible para ir a INICIO">
+    🏠 INICIO
+  </button>
+
+  <button type="button" class="draggable-fab" id="fab-top" title="Arrástrame para moverme o púlsame para subir al comienzo de la pestaña actual" aria-label="Botón flotante movible para subir arriba de la pestaña actual">
+    ⬆ ARRIBA
+  </button>
+
+  <script>
+    /**
+     * Aplicación SPA del Tutorial Interactivo - Clean Code Architecture
+     * Nombres reveladores de intención, funciones enfocadas (SRP) y manejo defensivo de errores.
+     */
+    (function initializeTutorialApplication() {
+      'use strict';
+
+      const STORAGE_KEYS = {
+        ACTIVE_TAB: 'coderick_tut_active_tab_v001',
+        THEME: 'coderick_tut_theme_v001',
+        FONT_SCALE: 'coderick_tut_font_v001',
+        CHECKLIST: 'coderick_tut_checks_v001',
+        FAB_HOME_POS: 'coderick_tut_fab_home_v001',
+        FAB_TOP_POS: 'coderick_tut_fab_top_v001'
+      };
+
+      const sections = Array.from(document.querySelectorAll('.tab-section'));
+      const navChips = Array.from(document.querySelectorAll('nav#top-nav .chip[data-tab]'));
+      const drawerElement = document.querySelector('#dr');
+      const menuButton = document.querySelector('#mb');
+      const homeIndexButton = document.querySelector('#ix');
+
+      let currentSectionIndex = 0;
+      let svgMasterTemplate = '';
+
+      /* =====================================================================
+       * 1. ALMACENAMIENTO SEGURO (PERSISTENCIA CON GESTIÓN DE ERRORES)
+       * ===================================================================== */
+      function readStorageValue(key, fallbackValue) {
+        try {
+          const rawValue = window.localStorage.getItem(key);
+          return rawValue !== null ? JSON.parse(rawValue) : fallbackValue;
+        } catch (storageError) {
+          return fallbackValue;
+        }
+      }
+
+      function writeStorageValue(key, value) {
+        try {
+          window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (storageError) {
+          /* En entornos con localStorage restringido continúa funcionando sin interrumpir al usuario */
+        }
+      }
+
+      /* =====================================================================
+       * 2. MOTOR DE PLANTILLA ÚNICA SVG ANIMADO Y REPARACIÓN AUTOMÁTICA
+       * ===================================================================== */
+      function extractAndRemoveMasterSvgSource() {
+        const masterNode = document.getElementById('svg-master-source');
+        if (!masterNode) {
+          return;
+        }
+        svgMasterTemplate = masterNode.innerHTML.trim();
+        masterNode.remove();
+      }
+
+      function buildUniqueSvgMarkup(instanceSuffix) {
+        return svgMasterTemplate.replace(/__UID__/g, instanceSuffix);
+      }
+
+      function mountSvgInstance(containerId, instanceSuffix) {
+        const container = document.getElementById(containerId);
+        if (!container || !svgMasterTemplate) {
+          return;
+        }
+        try {
+          container.innerHTML = buildUniqueSvgMarkup(instanceSuffix);
+          const svgElement = container.querySelector('svg');
+          if (!svgElement) {
+            applyDataUriSvgFallback(container, instanceSuffix);
+          }
+        } catch (renderError) {
+          applyDataUriSvgFallback(container, instanceSuffix);
+        }
+      }
+
+      function applyDataUriSvgFallback(container, instanceSuffix) {
+        try {
+          const rawSvg = buildUniqueSvgMarkup(instanceSuffix);
+          const encodedSvg = 'data:image/svg+xml;utf8,' + encodeURIComponent(rawSvg);
+          container.innerHTML = '<img src="' + encodedSvg + '" alt="Ilustración de Academia Online Coderick IA" style="width:100%;height:100%;object-fit:contain;"/>';
+        } catch (fallbackError) {
+          container.textContent = 'Ilustración interactiva: Academia Online con Coderick IA.';
+        }
+      }
+
+      function ensureVisibleSvgContainersAreMounted() {
+        if (currentSectionIndex === 0) {
+          const homeMount = document.getElementById('svg-mount-home');
+          if (homeMount && !homeMount.querySelector('svg, img')) {
+            mountSvgInstance('svg-mount-home', 'home');
+          }
+        }
+        if (currentSectionIndex === 9) {
+          const creditsMount = document.getElementById('svg-mount-credits');
+          if (creditsMount && !creditsMount.querySelector('svg, img')) {
+            mountSvgInstance('svg-mount-credits', 'credits');
+          }
+        }
+      }
+
+      /* =====================================================================
+       * 3. NAVEGACIÓN SPA E ÍNDICE DESLIZANTE (#dr y #mb)
+       * ===================================================================== */
+      function toggleIndexDrawer(forceState) {
+        const isOpen = drawerElement.classList.toggle('o', forceState);
+        menuButton.setAttribute('aria-expanded', String(isOpen));
+      }
+
+      function buildIndexDrawerEntries() {
+        drawerElement.innerHTML = '';
+        sections.forEach(function createEntry(sectionEl, index) {
+          const link = document.createElement('a');
+          const sectionTitle = sectionEl.dataset.t || (sectionEl.querySelector('h2') ? sectionEl.querySelector('h2').textContent : 'Sección');
+          link.textContent = (index ? index + '. ' : '') + sectionTitle;
+          link.setAttribute('role', 'button');
+          link.setAttribute('tabindex', '0');
+          link.onclick = function onEntryClick() {
+            goToSection(index);
+            toggleIndexDrawer(false);
+          };
+          link.onkeydown = function onEntryKeydown(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              goToSection(index);
+              toggleIndexDrawer(false);
+            }
+          };
+          drawerElement.appendChild(link);
+        });
+      }
+
+      function goToSection(targetIndex) {
+        const safeIndex = Math.max(0, Math.min(sections.length - 1, Number(targetIndex) || 0));
+        currentSectionIndex = safeIndex;
+
+        sections.forEach(function toggleSectionVisibility(sectionEl, idx) {
+          sectionEl.classList.toggle('active', idx === safeIndex);
+        });
+
+        navChips.forEach(function toggleChipHighlight(chipEl) {
+          const chipIndex = Number(chipEl.getAttribute('data-tab'));
+          const isCurrent = chipIndex === safeIndex;
+          chipEl.classList.toggle('active', isCurrent);
+          if (isCurrent) {
+            chipEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        });
+
+        Array.from(drawerElement.children).forEach(function highlightDrawerLink(anchorEl, idx) {
+          anchorEl.classList.toggle('on', idx === safeIndex);
+        });
+
+        if (safeIndex === 0) {
+          mountSvgInstance('svg-mount-home', 'home');
+        } else if (safeIndex === 9) {
+          mountSvgInstance('svg-mount-credits', 'credits');
+        }
+
+        scrollToCurrentTabStart();
+        writeStorageValue(STORAGE_KEYS.ACTIVE_TAB, safeIndex);
+        updateReadingProgressBar();
+      }
+
+      function scrollToCurrentTabStart() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      /* =====================================================================
+       * 4. BOTONES FLOTANTES ARRASTRABLES (MOVIBLES TÁCTIL Y RATÓN)
+       * ===================================================================== */
+      function makeFloatingButtonDraggable(buttonElement, storageKey, onClickCallback) {
+        if (!buttonElement) {
+          return;
+        }
+
+        const savedPos = readStorageValue(storageKey, null);
+        if (savedPos && typeof savedPos.left === 'number' && typeof savedPos.top === 'number') {
+          applySafeViewportPosition(buttonElement, savedPos.left, savedPos.top);
+        }
+
+        let isDragging = false;
+        let hasMovedSignificantly = false;
+        let startX = 0;
+        let startY = 0;
+        let initialLeft = 0;
+        let initialTop = 0;
+
+        buttonElement.addEventListener('pointerdown', function onPointerDown(event) {
+          isDragging = true;
+          hasMovedSignificantly = false;
+          startX = event.clientX;
+          startY = event.clientY;
+          const rect = buttonElement.getBoundingClientRect();
+          initialLeft = rect.left;
+          initialTop = rect.top;
+          buttonElement.setPointerCapture(event.pointerId);
+        });
+
+        buttonElement.addEventListener('pointermove', function onPointerMove(event) {
+          if (!isDragging) {
+            return;
+          }
+          const deltaX = event.clientX - startX;
+          const deltaY = event.clientY - startY;
+          if (Math.abs(deltaX) > 6 || Math.abs(deltaY) > 6) {
+            hasMovedSignificantly = true;
+          }
+          if (hasMovedSignificantly) {
+            applySafeViewportPosition(buttonElement, initialLeft + deltaX, initialTop + deltaY);
+          }
+        });
+
+        buttonElement.addEventListener('pointerup', function onPointerUp(event) {
+          if (!isDragging) {
+            return;
+          }
+          isDragging = false;
+          buttonElement.releasePointerCapture(event.pointerId);
+
+          if (hasMovedSignificantly) {
+            const finalRect = buttonElement.getBoundingClientRect();
+            writeStorageValue(storageKey, { left: finalRect.left, top: finalRect.top });
+          } else {
+            onClickCallback();
+          }
+        });
+      }
+
+      function applySafeViewportPosition(element, desiredLeft, desiredTop) {
+        const rect = element.getBoundingClientRect();
+        const maxLeft = Math.max(10, window.innerWidth - rect.width - 8);
+        const maxTop = Math.max(66, window.innerHeight - rect.height - 8);
+        const clampedLeft = Math.min(Math.max(6, desiredLeft), maxLeft);
+        const clampedTop = Math.min(Math.max(66, desiredTop), maxTop);
+
+        element.style.left = clampedLeft + 'px';
+        element.style.top = clampedTop + 'px';
+        element.style.right = 'auto';
+        element.style.bottom = 'auto';
+      }
+
+      /* =====================================================================
+       * 5. BOTONES COPIAR CON RESPALDO SEGURO
+       * ===================================================================== */
+      function setupCopyButtons() {
+        const copyButtons = document.querySelectorAll('.btn-copy');
+        copyButtons.forEach(function attachCopyHandler(button) {
+          button.addEventListener('click', function onCopyClick() {
+            const targetId = button.getAttribute('data-copy-target');
+            const targetElement = document.getElementById(targetId);
+            if (!targetElement) {
+              return;
+            }
+            const exactText = targetElement.textContent;
+            copyTextWithFallback(exactText, button);
+          });
+        });
+      }
+
+      function copyTextWithFallback(textToCopy, buttonElement) {
+        const originalLabel = buttonElement.textContent;
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(textToCopy).then(function onClipSuccess() {
+            showCopyFeedback(buttonElement, '✅ ¡COPIADO!', originalLabel);
+          }).catch(function onClipError() {
+            executeLegacyCopyFallback(textToCopy, buttonElement, originalLabel);
+          });
+        } else {
+          executeLegacyCopyFallback(textToCopy, buttonElement, originalLabel);
+        }
+      }
+
+      function executeLegacyCopyFallback(textToCopy, buttonElement, originalLabel) {
+        try {
+          const tempArea = document.createElement('textarea');
+          tempArea.value = textToCopy;
+          tempArea.style.position = 'fixed';
+          tempArea.style.left = '-9999px';
+          document.body.appendChild(tempArea);
+          tempArea.select();
+          const succeeded = document.execCommand('copy');
+          tempArea.remove();
+          if (succeeded) {
+            showCopyFeedback(buttonElement, '✅ ¡COPIADO!', originalLabel);
+          } else {
+            showCopyFeedback(buttonElement, '⚠️ Selecciona y copia manual', originalLabel);
+          }
+        } catch (err) {
+          showCopyFeedback(buttonElement, '⚠️ Copia manual requerida', originalLabel);
+        }
+      }
+
+      function showCopyFeedback(buttonElement, message, originalLabel) {
+        buttonElement.textContent = message;
+        setTimeout(function restoreButtonLabel() {
+          buttonElement.textContent = originalLabel;
+        }, 2000);
+      }
+
+      /* =====================================================================
+       * 6. BUSCADOR INTERNO EN TIEMPO REAL
+       * ===================================================================== */
+      function setupInternalSearch() {
+        const searchInput = document.getElementById('global-search');
+        const resultsBox = document.getElementById('search-results-box');
+        if (!searchInput || !resultsBox) {
+          return;
+        }
+
+        searchInput.addEventListener('input', function onSearchInput() {
+          const query = searchInput.value.trim().toLowerCase();
+          if (query.length < 2) {
+            resultsBox.style.display = 'none';
+            resultsBox.innerHTML = '';
+            return;
+          }
+
+          const matches = [];
+          sections.forEach(function scanSection(secEl, secIdx) {
+            const textContent = secEl.textContent || '';
+            const lowerText = textContent.toLowerCase();
+            const matchPos = lowerText.indexOf(query);
+            if (matchPos !== -1) {
+              const title = secEl.dataset.t || 'Sección ' + secIdx;
+              const snippetStart = Math.max(0, matchPos - 35);
+              const snippetEnd = Math.min(textContent.length, matchPos + 85);
+              const snippet = textContent.slice(snippetStart, snippetEnd).replace(/\s+/g, ' ').trim();
+              matches.push({ index: secIdx, title: title, snippet: snippet });
+            }
+          });
+
+          renderSearchResults(matches, resultsBox, searchInput);
+        });
+      }
+
+      function renderSearchResults(matches, resultsBox, searchInput) {
+        resultsBox.innerHTML = '';
+        resultsBox.style.display = 'block';
+
+        if (matches.length === 0) {
+          resultsBox.innerHTML = '<p style="margin:0;color:var(--text-muted);">No se encontraron coincidencias para tu búsqueda.</p>';
+          return;
+        }
+
+        matches.forEach(function createHitElement(hit) {
+          const item = document.createElement('div');
+          item.className = 'search-hit';
+          item.innerHTML = '<strong>Ir a pestaña: ' + hit.title + '</strong><br><span style="font-size:0.84rem;color:var(--text-muted);">…' + hit.snippet + '…</span>';
+          item.onclick = function onHitClick() {
+            goToSection(hit.index);
+            resultsBox.style.display = 'none';
+            searchInput.value = '';
+          };
+          resultsBox.appendChild(item);
+        });
+      }
+
+      /* =====================================================================
+       * 7. ACCESIBILIDAD, TAMAÑO DE FUENTE, TEMA E IMPRESIÓN A4
+       * ===================================================================== */
+      function setupAccessibilityAndThemeControls() {
+        let currentFontScale = Number(readStorageValue(STORAGE_KEYS.FONT_SCALE, 1)) || 1;
+        applyFontScale(currentFontScale);
+
+        const savedTheme = readStorageValue(STORAGE_KEYS.THEME, 'dark');
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        document.getElementById('btn-font-dec').onclick = function decreaseFont() {
+          currentFontScale = Math.max(0.85, Number((currentFontScale - 0.08).toFixed(2)));
+          applyFontScale(currentFontScale);
+        };
+
+        document.getElementById('btn-font-inc').onclick = function increaseFont() {
+          currentFontScale = Math.min(1.3, Number((currentFontScale + 0.08).toFixed(2)));
+          applyFontScale(currentFontScale);
+        };
+
+        document.getElementById('btn-theme-toggle').onclick = function toggleTheme() {
+          const current = document.documentElement.getAttribute('data-theme');
+          const nextTheme = current === 'dark' ? 'light' : 'dark';
+          document.documentElement.setAttribute('data-theme', nextTheme);
+          writeStorageValue(STORAGE_KEYS.THEME, nextTheme);
+        };
+
+        document.getElementById('btn-print-pdf').onclick = handleSafePrintDocument;
+      }
+
+      function applyFontScale(scaleValue) {
+        document.documentElement.style.setProperty('--font-scale', String(scaleValue));
+        writeStorageValue(STORAGE_KEYS.FONT_SCALE, scaleValue);
+      }
+
+      function handleSafePrintDocument() {
+        const closedDetailsBeforePrint = [];
+        mountSvgInstance('svg-mount-home', 'home');
+        mountSvgInstance('svg-mount-credits', 'credits');
+
+        document.querySelectorAll('details').forEach(function openDetailsForPrint(detailEl) {
+          if (!detailEl.open) {
+            closedDetailsBeforePrint.push(detailEl);
+            detailEl.open = true;
+          }
+        });
+
+        try {
+          window.print();
+        } catch (printError) {
+          alert('Abre este archivo directamente en el navegador y utiliza Ctrl+P o Cmd+P');
+        } finally {
+          setTimeout(function restoreStateAfterPrint() {
+            closedDetailsBeforePrint.forEach(function closePreviouslyClosed(detailEl) {
+              detailEl.open = false;
+            });
+          }, 500);
+        }
+      }
+
+      /* =====================================================================
+       * 8. CHECKLIST PERSISTENTE Y CONTROLES DE LAS 33 PREGUNTAS
+       * ===================================================================== */
+      function setupPersistentChecklist() {
+        const savedState = readStorageValue(STORAGE_KEYS.CHECKLIST, {});
+        const checkItems = document.querySelectorAll('#practice-checklist .checklist-item');
+
+        checkItems.forEach(function bindCheckItem(itemEl) {
+          const checkId = itemEl.getAttribute('data-check-id');
+          const inputEl = itemEl.querySelector('input[type="checkbox"]');
+          if (!inputEl || !checkId) {
+            return;
+          }
+          inputEl.checked = Boolean(savedState[checkId]);
+          itemEl.classList.toggle('done', inputEl.checked);
+
+          inputEl.addEventListener('change', function onCheckChange() {
+            savedState[checkId] = inputEl.checked;
+            itemEl.classList.toggle('done', inputEl.checked);
+            writeStorageValue(STORAGE_KEYS.CHECKLIST, savedState);
+          });
+        });
+
+        const resetBtn = document.getElementById('btn-reset-checklist');
+        if (resetBtn) {
+          resetBtn.onclick = function resetChecklist() {
+            checkItems.forEach(function uncheckItem(itemEl) {
+              const inputEl = itemEl.querySelector('input[type="checkbox"]');
+              if (inputEl) {
+                inputEl.checked = false;
+              }
+              itemEl.classList.remove('done');
+            });
+            writeStorageValue(STORAGE_KEYS.CHECKLIST, {});
+          };
+        }
+      }
+
+      function setupQaAccordionBulkButtons() {
+        const expandBtn = document.getElementById('btn-expand-all-qa');
+        const collapseBtn = document.getElementById('btn-collapse-all-qa');
+        const qaDetails = document.querySelectorAll('#sec-5 details.qa-card');
+
+        if (expandBtn) {
+          expandBtn.onclick = function expandAll() {
+            qaDetails.forEach(function openDetail(d) { d.open = true; });
+          };
+        }
+        if (collapseBtn) {
+          collapseBtn.onclick = function collapseAll() {
+            qaDetails.forEach(function closeDetail(d) { d.open = false; });
+          };
+        }
+      }
+
+      function updateReadingProgressBar() {
+        const progressBar = document.getElementById('reading-progress');
+        if (!progressBar) {
+          return;
+        }
+        const scrollTop = window.scrollY || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrollPercent = docHeight > 0 ? Math.min(100, Math.round((scrollTop / docHeight) * 100)) : 0;
+        const tabProgress = Math.round(((currentSectionIndex + 1) / sections.length) * 100);
+        progressBar.style.width = Math.max(scrollPercent, tabProgress) + '%';
+      }
+
+      /* =====================================================================
+       * 9. INICIALIZACIÓN DE EVENTOS GLOBALES
+       * ===================================================================== */
+      function bindGlobalEvents() {
+        menuButton.onclick = function onMenuBtnClick() {
+          toggleIndexDrawer();
+        };
+
+        if (homeIndexButton) {
+          homeIndexButton.onclick = function onHomeIndexBtnClick() {
+            toggleIndexDrawer(true);
+          };
+        }
+
+        navChips.forEach(function attachChipClick(chip) {
+          chip.onclick = function onChipClick() {
+            goToSection(Number(chip.getAttribute('data-tab')));
+            toggleIndexDrawer(false);
+          };
+        });
+
+        window.addEventListener('keydown', function onGlobalKeyDown(event) {
+          if (event.key === 'Escape') {
+            toggleIndexDrawer(false);
+          } else if (event.key === 'ArrowRight' && document.activeElement.tagName !== 'INPUT') {
+            if (currentSectionIndex < sections.length - 1) {
+              goToSection(currentSectionIndex + 1);
+            }
+          } else if (event.key === 'ArrowLeft' && document.activeElement.tagName !== 'INPUT') {
+            if (currentSectionIndex > 0) {
+              goToSection(currentSectionIndex - 1);
+            }
+          }
+        });
+
+        document.addEventListener('click', function onOutsideDrawerClick(event) {
+          if (!event.target.closest('#dr,#mb,#ix')) {
+            toggleIndexDrawer(false);
+          }
+        });
+
+        window.addEventListener('scroll', updateReadingProgressBar, { passive: true });
+        window.addEventListener('beforeprint', function onBeforePrint() {
+          mountSvgInstance('svg-mount-home', 'home');
+          mountSvgInstance('svg-mount-credits', 'credits');
+        });
+
+        setInterval(ensureVisibleSvgContainersAreMounted, 2500);
+      }
+
+      /* Arranque ordenado de la aplicación */
+      extractAndRemoveMasterSvgSource();
+      buildIndexDrawerEntries();
+      bindGlobalEvents();
+      setupCopyButtons();
+      setupInternalSearch();
+      setupAccessibilityAndThemeControls();
+      setupPersistentChecklist();
+      setupQaAccordionBulkButtons();
+
+      makeFloatingButtonDraggable(
+        document.getElementById('fab-home'),
+        STORAGE_KEYS.FAB_HOME_POS,
+        function navigateHome() { goToSection(0); }
+      );
+
+      makeFloatingButtonDraggable(
+        document.getElementById('fab-top'),
+        STORAGE_KEYS.FAB_TOP_POS,
+        function navigateTopOfCurrentTab() { scrollToCurrentTabStart(); }
+      );
+
+      const initialSection = readStorageValue(STORAGE_KEYS.ACTIVE_TAB, 0);
+      goToSection(initialSection);
+
+      window.tutorialApp = {
+        goToSection: goToSection,
+        scrollToCurrentTabStart: scrollToCurrentTabStart
+      };
+    })();
+  </script>
+</body>
+</html>
